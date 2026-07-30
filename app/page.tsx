@@ -6,6 +6,7 @@ import { AudiencesSection } from "@/components/sections/AudiencesSection";
 import { WhySection } from "@/components/sections/WhySection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { InsightsSection } from "@/components/sections/InsightsSection";
+import { CtaSection } from "@/components/sections/CtaSection";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
         <WhySection />
         <TestimonialsSection />
         <InsightsSection />
+        <CtaSection />
       </main>
     </>
   );

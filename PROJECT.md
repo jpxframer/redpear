@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (section 7 "Insights" built; 7 of 10 landing blocks)
+**Last updated:** 2026-07-30 (section 8 "CTA band" built; 8 of 10 landing blocks)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -28,11 +28,11 @@ Landing page, section by section. Six of ten blocks are built and pushed.
 | 5 — Why RedPear | ✅ |
 | 6 — Case studies | ✅ |
 | 7 — Insights & Resources (blog) | ✅ |
-| 8 — CTA band | ⬜ |
+| 8 — CTA band | ✅ |
 | 9 — Footer (+ newsletter form) | ⬜ |
 
-**Next up:** section 3 closes the gap; then 8 and 9 finish the page. Screens 2–8 of the
-eight core screens have not been started at all.
+**Next up:** section 9 (footer) is the last block, and section 3 still needs to fill the
+gap in the middle. Screens 2–8 of the eight core screens have not been started at all.
 
 **Two decisions still open**, both worth settling before the sections that need them:
 
@@ -166,6 +166,7 @@ because the inset highlight colour and outer shadow differ per surface:
 | `gloss-red` | primary buttons, the red icon badge |
 | `gloss-white` | secondary button, most cards |
 | `gloss-bento` | section 2 bento cards — 10px outer blur as a real box-shadow, so corners stay crisp under the clipped image |
+| `gloss-cta` | section 8 CTA band — red inset like `gloss-red`, 10px outer blur like `gloss-bento` |
 | `gloss-avatar` | the chat avatar in the hero |
 
 ---
@@ -212,7 +213,7 @@ named just "Section" in Figma. Named below by their heading copy.
 | 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ✅ done |
 | 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ✅ done |
 | 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ✅ done |
-| 8 | CTA band — "Ready to Modernize Your Insurance Operations?" | `20875-20347` | `20875-21227` | 488 | ⬜ |
+| 8 | CTA band — "Ready to Modernize Your Insurance Operations?" | `20875-20347` | `20875-21227` | 488 | ✅ done |
 | 9 | Footer — logo, newsletter signup | `20875-20371` | `20875-21251` | 378 | ⬜ |
 
 Desktop and mobile nodes are paired by document order, which matches on section count and
@@ -466,6 +467,9 @@ at 1440px and 402px and diff against the Figma frames.
       the same 28/36 + 16/24 step-down.
 - [ ] **Section 7 blog cards are not links.** Figma has no URLs on them, so they are plain
       `article` elements. They need hrefs once the blog exists.
+- [ ] **The section 8 CTA button links to `#demo`, which is the section it sits in** — so
+      clicking it does nothing. Every other "Book a Demo" on the page now correctly scrolls
+      here, but this one needs a real destination (Calendly, a contact form, a route).
 - [ ] **Section 6: Amara Okafor's card is drawn at a 20px radius**; the other three are
       24px. Reproduced as designed, isolated behind `TestimonialCard`'s `radiusClass`.
 - [ ] **Section 6: quote punctuation is mixed** — straight quotes on cards 1 and 2, curly
@@ -511,6 +515,23 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 8 (CTA band) built, desktop + mobile
+A single red card in [`CtaSection`](components/sections/CtaSection.tsx). Adds the
+`gloss-cta` utility and a `neutral-50` token.
+
+Desktop 1440x490 against Figma's 488, mobile 402x502 against 500 — the usual +2 from CSS
+borders consuming layout space where Figma strokes do not.
+
+The oversized RedPear watermark is drawn as a **CSS mask over white at 10% opacity**,
+reusing `brand/redpear-logo.svg`, rather than re-exporting Figma's three nested mask
+layers. Same visual result, no new assets, and it clips at the card edge as designed.
+
+Heading weight differs by breakpoint here: 52/56 semibold on desktop, 32/40 **bold** on
+mobile. The button reuses the existing `Button` secondary variant, which matched exactly.
+
+The section carries `id="demo"`, so every "Book a Demo" across the navbar, hero and mobile
+menu now resolves here.
 
 ### 2026-07-30 — Section 7 (Insights & Resources) built, desktop + mobile
 Three blog cards, 3-up on desktop and stacked on mobile, via
