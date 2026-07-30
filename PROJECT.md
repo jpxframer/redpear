@@ -7,8 +7,11 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (insurer logo row is now a capped marquee)
+**Last updated:** 2026-07-30 (deployed to Vercel and verified live)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
+**Live:** https://redpear.vercel.app — **publicly reachable**, deployed from `main` via the
+Vercel dashboard's GitHub integration, so every push to `main` redeploys. There is no
+`.vercel` dir locally and no CLI auth on the dev machine; deploys are not driven from here.
 **Owner:** jpxframer / promisejames0501@gmail.com
 
 ---
@@ -416,6 +419,11 @@ render *wider* than designed and upscales them past their native resolution.
 natural size (59x32) and will not render beyond it. 128px is enough for a 59px box at 2x
 (about 1.08x), but there is no headroom for a 3x display.
 
+**Counting `cssRules` is not a valid "is the stylesheet loaded?" check under Tailwind v4.**
+Everything sits inside `@layer` blocks, so the top-level rule count is tiny — 62 on the
+live build — and looks broken when it is not. Assert on a computed value instead: the h1
+being 52px on desktop and 36px on mobile, or the body font resolving to Inter.
+
 **Next's dev overlay injects its own `<footer>` earlier in the DOM than yours.** So
 `document.querySelector("footer")` in a verification script silently matches the overlay,
 not the page footer, and every child lookup off it returns null. Reach the real one
@@ -563,6 +571,20 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Deployed to Vercel and verified live
+User deployed via the Vercel dashboard (no CLI auth exists on this machine, so deploys
+cannot be driven from here). Live at **https://redpear.vercel.app**, wired to `main`, so
+every push redeploys.
+
+Verified the live site at 1440 and 402 rather than trusting the 200: all 9 sections and 10
+headings present, footer form rendering, marquee animating, responsive type correct (h1
+52px desktop / 36px mobile), no page errors, no horizontal overflow. The only failing
+request is `favicon.ico`.
+
+**The site is publicly reachable** while the newsletter form is a no-op, the demo CTAs have
+no booking flow, and several nav/footer links are placeholders. Fine for sharing
+internally; not fine to point a client or campaign at yet.
 
 ### 2026-07-30 — Insurer logo row became a marquee
 User asked for this row to stop spanning the full screen, to hold Figma's exact logo
