@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="typing-bubble">
+<path d="M0 2C0 0.89543 0.895431 0 2 0H29C32.866 0 36 3.13401 36 7V7C36 10.866 32.866 14 29 14H8C3.58172 14 0 10.4183 0 6V2Z" fill="#F3F4F6"/>
+<circle id="Ellipse" cx="11" cy="7" r="2" fill="#9CA3AF"/>
+<circle id="Ellipse_2" cx="18" cy="7" r="2" fill="#6B7280"/>
+<circle id="Ellipse_3" cx="25" cy="7" r="2" fill="#9CA3AF"/>
+</g>
+</svg>

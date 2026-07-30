@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (mobile nav overlay)
+**Last updated:** 2026-07-30 (section 2 "Solutions" built)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -121,7 +121,7 @@ named just "Section" in Figma. Named below by their heading copy.
 | — | Nav bar | `20875-19503` | `20875-21353` | 80 | ✅ done |
 | — | Hero | `20875-19517` | `20875-20475` | 1204 | ✅ done |
 | 1 | Problem — "Insurance Shouldn't Be Slowed Down by Legacy Systems" | `20875-19668` | `20875-20550` | 1399 | ✅ done |
-| 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ⬜ |
+| 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ✅ done |
 | 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ⬜ |
 | 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ⬜ |
 | 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ⬜ |
@@ -145,6 +145,26 @@ cards with 32px gaps, 367-wide mobile cards with 16px gaps):
 | Disconnected Systems | `20875-19736` | `20875-20619` |
 | Poor Customer Experience | `20875-19802` | `20875-20685` |
 | Limited Insights | `20875-19860` | `20875-20743` |
+
+**Section 2 card node IDs.** Desktop is two bento cards over a row of four small cards;
+mobile stacks all six. Bento cards are 600 and 592 wide by 602 tall (built as equal
+columns, within 4px); small cards are 286x290 with 24px gaps.
+
+| Card | Desktop | Mobile |
+|---|---|---|
+| AI Solutions (featured bento) | `20875-19929` | `20875-20812` |
+| Insurance Platforms (bento) | `20875-19934` | `20875-20817` |
+| Analytics & Insights | `20875-19940` | `20875-20823` |
+| WhatsApp Solutions | `20875-19983` | `20875-20866` |
+| Digital Transformation | `20875-20011` | `20875-20894` |
+| Consulting & Integration | `20875-20041` | `20875-20924` |
+
+Both bento visuals are flattened PNG exports (1644x1290 and 1632x1290), not DOM. The four
+small cards' micro-visuals are rebuilt as DOM. Bento type does **not** change between
+breakpoints — 28/36 Geist and 18/28 Inter at both sizes.
+
+**Per the user, mobile bento cards use 16px padding, not Figma's 24px.** Desktop keeps 24.
+This is a deliberate deviation, not a mistake — see `BentoCard`'s `p-4 lg:p-6`.
 
 ---
 
@@ -182,6 +202,17 @@ render *wider* than designed and upscales them past their native resolution.
 `get_screenshot` with a large `maxDimension` does not help, because it reports the node's
 natural size (59x32) and will not render beyond it. 128px is enough for a 59px box at 2x
 (about 1.08x), but there is no headroom for a 3x display.
+
+**Lazy images below the fold report as "broken" in element screenshots.** Puppeteer's
+`elementHandle.screenshot()` scrolls the element into view but does not wait for the lazy
+images that scroll just triggered, so they capture blank and `naturalWidth` reads 0. Walk
+the page (driving `window.scrollTo` from Node, not in an in-page async loop, which can
+blow the protocol timeout), `await img.decode()`, then capture.
+
+**Read `img.currentSrc`, never `getAttribute("src")`, to check what `next/image` served.**
+The `src` attribute is the largest fallback candidate, so it always looks like the biggest
+variant was fetched. This produced a false "mobile is downloading a 3840px image" scare
+when the browser had correctly chosen the 828px candidate.
 
 **`img.naturalWidth` is density-corrected and will mislead you.** A 128px file selected as
 the 2x srcset candidate reports `naturalWidth === 64`, per the HTML spec. To judge real
@@ -269,6 +300,24 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 2 (Solutions) built, desktop + mobile
+Two bento cards over a row of four small cards on desktop, all six stacked on mobile.
+New components under [`components/solutions/`](components/solutions/): `BentoCard`,
+`SolutionCard`, `PreviewPanel`, plus four micro-visuals (`MicroChart`,
+`ConversationList`, `TransformationPreview`, `IntegrationPreview`).
+
+Added the `text-h6` token (20/28, -0.4) and a `gloss-bento` utility — bento cards use the
+same inset highlights as `gloss-white` but a 10px outer blur as a real box-shadow rather
+than a filter, so corners stay crisp under the clipped image.
+
+Desktop measures 1233 against Figma's 1229, bento 596x604 against 600/592x602, small
+cards 286x292 against 286x290. Mobile small cards are content-sized (262-287) where Figma
+fixes them at 290; stacked with 16px gaps that reads better than forced uniform height.
+
+The user's node list was wrong again: desktop "copy" and "cards" both listed
+`19925`/`19926`, which are the two heading text nodes. Derived the real six card IDs from
+the grid structure instead.
 
 ### 2026-07-30 — Mobile nav overlay
 Reworked the mobile menu per user request: the toggle now swaps to an X, the panel is
