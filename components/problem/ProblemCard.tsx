@@ -1,21 +1,28 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { IconBadge } from "@/components/ui/IconBadge";
 
 type ProblemCardProps = {
   icon: string;
+  /** Set for partial-frame icon exports whose viewBox is smaller than 24x24. */
+  iconSizeClass?: string;
   title: string;
   body: string;
   children: ReactNode;
 };
 
-export function ProblemCard({ icon, title, body, children }: ProblemCardProps) {
+export function ProblemCard({
+  icon,
+  iconSizeClass,
+  title,
+  body,
+  children,
+}: ProblemCardProps) {
   return (
     <article className="gloss-white flex h-full flex-col items-start rounded-2xl bg-brand-white p-4 lg:p-6">
       <div className="flex h-full w-full flex-col gap-[19px]">
         <header className="flex w-full flex-col justify-center gap-4">
-          <div className="gloss-red flex w-fit items-center justify-center rounded-lg bg-brand-red p-2">
-            <Image src={icon} alt="" width={24} height={24} className="size-6" />
-          </div>
+          <IconBadge src={icon} sizeClass={iconSizeClass} />
           <div className="flex w-full flex-col gap-2">
             <h3 className="font-display text-h4-mobile font-medium text-brand-black lg:text-h4">
               {title}

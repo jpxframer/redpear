@@ -1,13 +1,22 @@
+import type { ReactNode } from "react";
 import { ProblemCard } from "@/components/problem/ProblemCard";
 import { ClaimsPipelineDiagram } from "@/components/problem/ClaimsPipelineDiagram";
 import { SystemTopologyDiagram } from "@/components/problem/SystemTopologyDiagram";
 import { CustomerJourneyDiagram } from "@/components/problem/CustomerJourneyDiagram";
 import { AnalyticsDiagram } from "@/components/problem/AnalyticsDiagram";
 
+type ProblemCardData = {
+  icon: string;
+  iconSizeClass?: string;
+  title: string;
+  body: string;
+  diagram: ReactNode;
+};
+
 // Cards 2 and 3 genuinely use the same bank glyph in Figma, exported as two
 // separate assets. Kept as-is rather than deduped, so a future icon change to
 // one card does not silently change the other.
-const cards = [
+const cards: ProblemCardData[] = [
   {
     icon: "/icons/timer.svg",
     title: "Manual Claims Processing",
@@ -28,6 +37,8 @@ const cards = [
   },
   {
     icon: "/icons/chart-evaluation.svg",
+    // Partial-frame export: 20x20 viewBox, so it must not stretch to the 24px slot.
+    iconSizeClass: "size-5",
     title: "Limited Insights",
     body: "Without real-time analytics, making informed business decisions becomes difficult.",
     diagram: <AnalyticsDiagram />,
@@ -57,6 +68,7 @@ export function ProblemSection() {
           <ProblemCard
             key={card.title}
             icon={card.icon}
+            iconSizeClass={card.iconSizeClass}
             title={card.title}
             body={card.body}
           >

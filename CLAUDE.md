@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (section 2 mobile card type revised)
+**Last updated:** 2026-07-30 (section 4 "Audiences" built; section 3 still skipped)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -75,9 +75,26 @@ raw hex.** They came from the Figma variable collection, so they are authoritati
 | `positive` | `#10B981` | trend green, send button |
 | `chat-canvas` / `chat-outbound` | `#F4F3EE` / `#E7F8E8` | chat thread |
 
-Type scale: `text-display-lg` (52/56), `text-h1-mobile` (36/44), `text-h3` (32/40),
-`text-h3-mobile` (28/36), `text-body-lg` (18/28), `text-body-md` (16/24). Figma expresses
-letter-spacing as a percentage (`-2` means −2%), already converted to px in the tokens.
+Type scale — Figma expresses letter-spacing as a percentage (`-2` means −2%), already
+converted to px in the tokens:
+
+| Token | Size/line | Figma style |
+|---|---|---|
+| `text-display-lg` | 52/56 | Display/Semibold/Large |
+| `text-h1-mobile` | 36/44 | Heading/H1/Semibold/Mobile |
+| `text-h2` | 36/44 | Heading/H2/Medium/Desktop |
+| `text-h3` | 32/40 | Heading/H3/Medium/Desktop |
+| `text-h3-mobile` | 28/36 | Heading/H3/Medium/Mobile |
+| `text-h4` | 28/36 | Heading/H4/*/Desktop |
+| `text-h4-mobile` | 24/32 | Heading/H4/*/Mobile |
+| `text-h5` | 24/32 | Heading/H5/Medium/Desktop |
+| `text-h6` | 20/28 | Heading/H6/Medium/Desktop, H5/Medium/Mobile |
+| `text-body-lg` | 18/28 | Paragraph/Large/Regular |
+| `text-body-md` | 16/24 | Paragraph/Medium/Regular |
+| `text-body-sm` | 14/20 | Paragraph/Small/Regular |
+
+`text-h4-mobile` and `text-h5` carry identical values but different Figma names; keep both
+so components read the way the design file does.
 
 **Gloss utilities** — the raised, lit-from-above look on buttons and cards. Three variants
 because the inset highlight colour differs per surface: `gloss-red`, `gloss-white`,
@@ -123,7 +140,7 @@ named just "Section" in Figma. Named below by their heading copy.
 | 1 | Problem — "Insurance Shouldn't Be Slowed Down by Legacy Systems" | `20875-19668` | `20875-20550` | 1399 | ✅ done |
 | 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ✅ done |
 | 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ⬜ |
-| 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ⬜ |
+| 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ✅ done |
 | 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ⬜ |
 | 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ⬜ |
 | 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ⬜ |
@@ -180,6 +197,20 @@ drop the prop.
 **Per the user, mobile bento cards use 16px padding, not Figma's 24px.** Desktop keeps 24.
 This is a deliberate deviation, not a mistake — see `BentoCard`'s `p-4 lg:p-6`.
 
+**Section 4 card node IDs.** Six cards, 3x2 on desktop (384/384/400 wide by 200 tall,
+24px gaps — built as equal 389px columns), stacked on mobile. Card type differs by
+breakpoint: 24/32 + 16/24 on desktop, 20/28 + 14/20 on mobile. The heading and body sit
+10px apart here, not the 16px the earlier sections use.
+
+| Card | Desktop | Mobile | Icon |
+|---|---|---|---|
+| Insurance Providers | `20875-20202` | `20875-21084` | piggy-bank (21.5x19.5) |
+| Financial Services | `20875-20209` | `20875-21091` | bank-linear |
+| Government | `20875-20216` | `20875-21098` | courthouse |
+| Healthcare | `20875-20223` | `20875-21105` | health |
+| Enterprise | `20875-20230` | `20875-21112` | briefcase |
+| Microfinance | `20875-20237` | `20875-21119` | wallet-money |
+
 ---
 
 ## Conventions and gotchas
@@ -198,6 +229,15 @@ order you write them in the class attribute.** Passing `hidden` to a component w
 class already sets `inline-flex` will silently lose. Wrap the component in a
 `hidden lg:block` div instead. This caused a real bug where the desktop CTA leaked into
 the mobile nav — see the comment in [`Navbar.tsx`](components/layout/Navbar.tsx).
+
+**Some Figma icon exports are partial frames — check the viewBox before sizing.** Most
+icons export as a full 24x24, but a few come back cropped to the artwork with the padding
+expressed as insets on the parent (`piggy-bank` is 21.5x19.5, `chart-evaluation` is 20x20,
+`redpear-logo` is 70x48.05). Rendering those at `size-6` stretches them noticeably larger
+than the full-frame icons beside them. Use
+[`IconBadge`](components/ui/IconBadge.tsx), which centres the icon in a fixed 24px slot,
+and pass `sizeClass` for any icon whose viewBox is not 24x24. To audit:
+`Get-ChildItem public -Recurse -Filter *.svg` and read each `viewBox`.
 
 **Figma asset URLs expire after 7 days.** Always download the bytes into `public/` and
 reference local paths. Never leave a `figma.com/api/mcp/asset/...` URL in a component.
@@ -322,6 +362,27 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 4 (Audiences) built, desktop + mobile
+Six icon-and-copy cards, 3x2 on desktop and stacked on mobile. New
+[`AudienceCard`](components/audiences/AudienceCard.tsx) plus a shared
+[`IconBadge`](components/ui/IconBadge.tsx) that `ProblemCard` now uses too.
+
+Pixel-exact at both breakpoints: desktop 1440x656 and mobile 402x1286 both match Figma
+exactly, and mobile card heights (164/184/164/164/164/164) match card for card. Desktop
+needed `lg:auto-rows-fr` — the second row's copy is shorter, so without it the row sized
+down to 176 against Figma's uniform 200.
+
+Added `text-h5` (24/32) and `text-body-sm` (14/20) tokens.
+
+**Fixed a latent bug in section 1 while here.** An audit of every SVG viewBox found
+`chart-evaluation.svg` is a 20x20 partial-frame export being rendered at 24x24, so the
+"Limited Insights" icon was 20% larger than its three siblings. Both it and section 4's
+`piggy-bank` (21.5x19.5) now render at natural size inside `IconBadge`'s 24px slot.
+
+**Note: the user skipped section 3.** These node IDs are section 4. Section 3, "Technology
+That Works Behind Every Insurance Journey" (`20875-20074` / `20875-20957`), is still
+unbuilt and now sits between two finished sections.
 
 ### 2026-07-30 — Analytics micro chart now fills on mobile
 User spotted the Analytics & Insights chart sitting about two thirds width on mobile. The
