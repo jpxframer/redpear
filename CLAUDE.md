@@ -247,8 +247,16 @@ does not help. Write the message file with the **Write tool**, not
 `Set-Content -Encoding utf8` — the latter emits a UTF-8 BOM that git keeps, leaving a
 stray `﻿` at the front of the commit subject.
 
-**A `//` comment cannot go inside a JSX opening tag.** It is valid immediately after
-`return (`, before the element, but placing it between attributes is a syntax error.
+**The two JSX comment forms are valid in opposite places. Both have broken this repo.**
+
+- `// line comment` — valid immediately after `return (`, before the element. A syntax
+  error between attributes inside an opening tag.
+- `{/* block comment */}` — valid inside JSX children. A syntax error between `return (`
+  and the element, where `{...}` parses as a block rather than a comment.
+
+The second failure is quiet: the dev server keeps answering 200 and serves a stale or
+partial page, so it looks like a layout bug rather than a compile error. If a component's
+markup vanishes from the DOM, check for this before debugging CSS.
 
 **Never run `npm run build` while `npm run dev` is running.** They share the `.next`
 directory, so the production build overwrites the dev server's compiled assets underneath
@@ -314,6 +322,13 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Analytics micro chart now fills on mobile
+User spotted the Analytics & Insights chart sitting about two thirds width on mobile. The
+`max-w-[248px]` cap was applied at all breakpoints, but Figma only fixes 248px on desktop
+(`20875-19945`, inside a 254px card); the mobile node `20875-20828` is `size-full`. Scoped
+the cap to `lg:`. All four preview panels now measure 336 of 336 on mobile, and desktop
+keeps Analytics at 248 of 252 as designed.
 
 ### 2026-07-30 — Section 2 mobile card type revised
 User updated the mobile text sizes in Figma and supplied all 12 text nodes. Mobile

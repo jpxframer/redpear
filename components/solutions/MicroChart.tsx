@@ -21,7 +21,10 @@ function LegendItem({ tone, label }: { tone: string; label: string }) {
 
 export function MicroChart() {
   return (
-    <PreviewPanel className="flex h-[134px] w-full max-w-[248px] flex-col justify-between">
+    // Figma caps this at 248px only on desktop, where the card is 286 wide. On
+    // mobile the card is full-bleed and the chart is size-full, so the cap has to
+    // be breakpoint-scoped or it leaves the panel short.
+    <PreviewPanel className="flex h-[134px] w-full flex-col justify-between lg:max-w-[248px]">
       <div className="flex w-full items-center justify-between">
         <p className="text-[8px] font-semibold text-brand-black">Premium Revenue</p>
         <div className="flex items-center gap-2">
