@@ -5,9 +5,39 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (section 6 mobile copy scale corrected; section 3 still skipped)
+**Last updated:** 2026-07-30 (consolidated progress pass; 6 of 10 landing blocks built)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
+
+---
+
+## Progress at a glance
+
+Landing page, section by section. Six of ten blocks are built and pushed.
+
+| Block | Status |
+|---|---|
+| Nav bar (+ mobile overlay) | ✅ |
+| Hero | ✅ |
+| 1 — Problem / Legacy Systems | ✅ |
+| 2 — Solutions | ✅ |
+| **3 — Platform / Technology** | ⬜ **skipped — the one gap in the page** |
+| 4 — Audiences | ✅ |
+| 5 — Why RedPear | ✅ |
+| 6 — Case studies | ✅ |
+| 7 — Insights & Resources (blog) | ⬜ |
+| 8 — CTA band | ⬜ |
+| 9 — Footer (+ newsletter form) | ⬜ |
+
+**Next up:** section 3 closes the gap; then 7, 8, 9 finish the page. Screens 2–8 of the
+eight core screens have not been started at all.
+
+**Two decisions still open**, both worth settling before the sections that need them:
+
+1. **Where does the footer's newsletter form post?** Mailchimp, Resend, a route handler
+   writing to a database, or a `mailto:` stopgap. Needed for section 9.
+2. **Are sections 6 and 7 content hardcoded or CMS-driven?** Hardcoded now; extracting
+   later is fine, but it shapes how section 7 gets built.
 
 ---
 
@@ -46,15 +76,33 @@ npm run build    # must pass before any commit
 app/
   globals.css          design tokens + gloss utilities  ← read before styling anything
   layout.tsx           font wiring, metadata
-  page.tsx             landing page composition
+  page.tsx             landing page composition (section order lives here)
 components/
   ui/Button.tsx        shared CTA (primary = red, secondary = white)
-  layout/Navbar.tsx    responsive nav, client component (mobile menu state)
-  sections/Hero.tsx    hero composition
+  ui/IconBadge.tsx     red gloss square + 24px icon slot (see the partial-frame gotcha)
+  layout/Navbar.tsx    responsive nav + mobile overlay, client component
+  sections/            one file per landing section, in page order:
+                         Hero, ProblemSection, SolutionsSection,
+                         AudiencesSection, WhySection, TestimonialsSection
   hero/                AnalyticsCard, ChatCard, ClaimsCard, InsurerLogos
+  problem/             ProblemCard + DiagramShell/Badge/MicroTag/Callout,
+                         and 4 diagrams (ClaimsPipeline, SystemTopology,
+                         CustomerJourney, Analytics)
+  solutions/           BentoCard, SolutionCard, PreviewPanel, and 4 micro-visuals
+                         (MicroChart, ConversationList, TransformationPreview,
+                         IntegrationPreview)
+  audiences/           AudienceCard
+  why/                 WhyCard
+  testimonials/        TestimonialCard
 public/
-  brand/ icons/ chart/ avatars/ insurers/    exported Figma assets
+  brand/ icons/ chart/ avatars/ insurers/     hero + shared assets
+  problem/ solutions/ why/ testimonials/      per-section assets
 ```
+
+**Reuse before adding.** `problem/` established the diagram vocabulary
+(`DiagramShell`, `DiagramBadge`, `MicroTag`, `DiagramCallout`) and `solutions/` the
+preview-panel one (`PreviewPanel`). Later sections should lean on these rather than
+inventing parallel components.
 
 ---
 
@@ -68,12 +116,19 @@ raw hex.** They came from the Figma variable collection, so they are authoritati
 | `brand-red` | `#F40B0D` | RedPear Website/Red |
 | `brand-black` | `#050000` | RedPear Website/Black |
 | `brand-white` | `#FFFDFD` | RedPear Website/White |
-| `neutral-500` | `#6B7280` | Neutral/500 (body copy) |
-| `neutral-200` | `#E5E7EB` | Neutral/200 (hairlines) |
+| `neutral-100/200/300/400/500/700` | `#F3F4F6` / `#E5E7EB` / `#D1D5DB` / `#9CA3AF` / `#6B7280` / `#374151` | Neutral/* |
 | `ink` / `ink-muted` / `ink-faint` | `#0F172A` / `#475569` / `#94A3B8` | in-card text |
 | `surface` | `#F1F5F9` | in-card fills |
 | `positive` | `#10B981` | trend green, send button |
 | `chat-canvas` / `chat-outbound` | `#F4F3EE` / `#E7F8E8` | chat thread |
+| `danger-pale/soft/border` | `#FFF5F5` / `#FEE2E2` / `#FCA5A5` | diagram status |
+| `warn-soft/softer/ink/deep/mid` | `#FEF3C7` / `#FEF9C3` / `#D97706` / `#92400E` / `#F59E0B` | diagram status |
+| `ok-soft` / `ok-ink` | `#DCFCE7` / `#16A34A` | diagram status |
+| `info-pale/soft/ink` | `#EFF6FF` / `#DBEAFE` / `#3B82F6` | diagram status |
+
+The diagram palette is declared explicitly rather than using Tailwind's defaults, whose v4
+OKLCH values do not match these hexes. There is also `--container-content: 1216px`, which
+drives `max-w-content`.
 
 Type scale — Figma expresses letter-spacing as a percentage (`-2` means −2%), already
 converted to px in the tokens:
@@ -96,9 +151,15 @@ converted to px in the tokens:
 `text-h4-mobile` and `text-h5` carry identical values but different Figma names; keep both
 so components read the way the design file does.
 
-**Gloss utilities** — the raised, lit-from-above look on buttons and cards. Three variants
-because the inset highlight colour differs per surface: `gloss-red`, `gloss-white`,
-`gloss-avatar`.
+**Gloss utilities** — the raised, lit-from-above look on buttons and cards. Four variants,
+because the inset highlight colour and outer shadow differ per surface:
+
+| Utility | Used on |
+|---|---|
+| `gloss-red` | primary buttons, the red icon badge |
+| `gloss-white` | secondary button, most cards |
+| `gloss-bento` | section 2 bento cards — 10px outer blur as a real box-shadow, so corners stay crisp under the clipped image |
+| `gloss-avatar` | the chat avatar in the hero |
 
 ---
 
@@ -368,8 +429,24 @@ at 1440px and 402px and diff against the Figma frames.
 
 ## Known follow-ups
 
-- [ ] Avatar PNGs in `public/avatars/` are ~1.4 MB each but render at 28px. Re-export at
-      ~64px. Next.js optimises delivery, so this is repo weight, not user-facing.
+**Awaiting a decision from the user**
+
+- [ ] **Footer newsletter form has no destination.** Mailchimp, Resend, a route handler
+      writing to a database, or a `mailto:` stopgap. Blocks finishing section 9.
+- [ ] **Sections 6 and 7 content is hardcoded.** Fine for now, but if it should be
+      CMS-driven that shapes how section 7 gets built.
+- [ ] **Section 6: Amara Okafor's card is drawn at a 20px radius**; the other three are
+      24px. Reproduced as designed, isolated behind `TestimonialCard`'s `radiusClass`.
+- [ ] **Section 6: quote punctuation is mixed** — straight quotes on cards 1 and 2, curly
+      on 3 and 4. Reproduced verbatim from Figma.
+- [ ] **Section 2: mobile small cards are content-sized** (262-287) where Figma fixes them
+      at 290. Stacked with 16px gaps this reads better than forced uniform height.
+
+**Engineering debt**
+
+- [ ] Avatar PNGs are oversized for their display size: `public/avatars/` is ~1.4 MB each
+      at 28px, `public/testimonials/` ~1.2 MB each (1024x1024) at 40px. Re-export at
+      ~64-96px. Next.js optimises delivery, so this is repo weight, not user-facing.
 - [ ] The mobile menu open state is **not in Figma**. It is now a fixed full-height
       overlay starting below the bar, with the toggle swapping to an X, undecorated links,
       and the CTA 24px below the last link. `public/icons/close.svg` was authored
@@ -390,7 +467,12 @@ at 1440px and 402px and diff against the Figma frames.
       cards are fixed-width and `justify-center` keeps them at 1216 centred.
 - [ ] The navbar's inner row spans the full viewport at any width. Figma only shows it at
       1440, so whether it should cap at 1216 on large screens is a design decision.
-- [ ] No tests and no CI yet.
+- [ ] No tests and no CI yet. Verification is currently a `puppeteer-core` script per
+      section, run from the scratchpad and driving the installed Chrome. Worth promoting
+      to a committed visual-regression check if the page keeps growing.
+- [ ] `favicon.ico` 404s — no icon has been set.
+- [ ] Both the Figma MCP and `git push` intermittently fail with network timeouts and need
+      retries. Not a code problem, but budget for retries in any scripted run.
 
 ---
 
@@ -398,6 +480,14 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Consolidated progress pass
+User asked for a progress save. Refreshed the parts of this file that had drifted while
+sections were being built one at a time: the Layout tree still listed only the hero
+components, the colour token table was missing the neutrals and the whole diagram palette,
+and the gloss utilities said three variants when there are four. Added a
+[Progress at a glance](#progress-at-a-glance) table at the top and split Known follow-ups
+into decisions awaiting the user versus engineering debt. No code changed.
 
 ### 2026-07-30 — Section 6 mobile copy scale corrected
 User updated `20875-21159` / `20875-21160` in Figma so the section heading and sub step
