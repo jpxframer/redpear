@@ -3,6 +3,7 @@ import { Hero } from "@/components/sections/Hero";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { SolutionsSection } from "@/components/sections/SolutionsSection";
 import { AudiencesSection } from "@/components/sections/AudiencesSection";
+import { WhySection } from "@/components/sections/WhySection";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <ProblemSection />
         <SolutionsSection />
         <AudiencesSection />
+        <WhySection />
       </main>
     </>
   );

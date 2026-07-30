@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (section 4 "Audiences" built; section 3 still skipped)
+**Last updated:** 2026-07-30 (section 5 "Why RedPear" built; section 3 still skipped)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -141,7 +141,7 @@ named just "Section" in Figma. Named below by their heading copy.
 | 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ✅ done |
 | 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ⬜ |
 | 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ✅ done |
-| 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ⬜ |
+| 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ✅ done |
 | 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ⬜ |
 | 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ⬜ |
 | 8 | CTA band — "Ready to Modernize Your Insurance Operations?" | `20875-20347` | `20875-21227` | 488 | ⬜ |
@@ -210,6 +210,18 @@ breakpoint: 24/32 + 16/24 on desktop, 20/28 + 14/20 on mobile. The heading and b
 | Healthcare | `20875-20223` | `20875-21105` | health |
 | Enterprise | `20875-20230` | `20875-21112` | briefcase |
 | Microfinance | `20875-20237` | `20875-21119` | wallet-money |
+
+**Section 5 card node IDs.** Four image-and-copy cards, 2x2 on desktop (592x582 with 24px
+gaps) and stacked on mobile. Each card is a 1952x1400 PNG export above a title and body;
+type is 28/36 + 18/28 on desktop, 24/32 + 16/24 on mobile. Heading and body sit 10px apart
+in the section copy, as in section 4.
+
+| Card | Desktop | Mobile | Image |
+|---|---|---|---|
+| Enterprise Ready | `20875-20251` | `20875-21132` | why/enterprise-ready.png |
+| AI Powered | `20875-20257` | `20875-21138` | why/ai-powered.png |
+| Secure Infrastructure | `20875-20263` | `20875-21144` | why/secure-infrastructure.png |
+| Customer Focused | `20875-20269` | `20875-21150` | why/customer-focused.png |
 
 ---
 
@@ -362,6 +374,18 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 5 (Why RedPear) built, desktop + mobile
+Four image-and-copy cards, 2x2 on desktop and stacked on mobile, via
+[`WhyCard`](components/why/WhyCard.tsx). All four visuals are flattened 1952x1400 PNG
+exports. Desktop 1440x1455 against Figma's 1448; mobile 402x1910 against 1908, with card
+heights 427/427/403/403 against 426.4/426.4/402.4/402.4.
+
+The residual few px is a box model difference, not a layout error: Figma strokes do not
+consume layout space, while a CSS `border` does under `box-sizing: border-box`. A 370px
+mobile card therefore has 336px of content here against Figma's 338. Not worth chasing.
+
+Section 3 remains skipped — it now sits between four finished sections.
 
 ### 2026-07-30 — Section 4 (Audiences) built, desktop + mobile
 Six icon-and-copy cards, 3x2 on desktop and stacked on mobile. New
