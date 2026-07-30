@@ -137,7 +137,7 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block border-b border-neutral-200 py-4 text-body-lg text-neutral-500"
+                  className="block py-4 text-body-lg text-neutral-500"
                 >
                   {link.label}
                 </Link>
@@ -145,7 +145,7 @@ export function Navbar() {
             ))}
           </ul>
 
-          <div className="mt-auto pt-8">
+          <div className="mt-6">
             <Button href="#demo" className="w-full" onClick={() => setMenuOpen(false)}>
               Book a Demo
             </Button>

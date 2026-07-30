@@ -242,8 +242,8 @@ at 1440px and 402px and diff against the Figma frames.
 - [ ] Avatar PNGs in `public/avatars/` are ~1.4 MB each but render at 28px. Re-export at
       ~64px. Next.js optimises delivery, so this is repo weight, not user-facing.
 - [ ] The mobile menu open state is **not in Figma**. It is now a fixed full-height
-      overlay starting below the bar, with the toggle swapping to an X, links divided by
-      hairlines, and the CTA pinned to the bottom. `public/icons/close.svg` was authored
+      overlay starting below the bar, with the toggle swapping to an X, undecorated links,
+      and the CTA 24px below the last link. `public/icons/close.svg` was authored
       to match the exported hamburger (24x24, 1.5 stroke, round caps, `#FFFDFD`) rather
       than exported from Figma, since no close icon exists there. Worth a proper frame.
 - [ ] The overlay has no open/close animation, because it is conditionally rendered so a
