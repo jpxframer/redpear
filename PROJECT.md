@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (section 7 mobile type stepped down; landing page complete)
+**Last updated:** 2026-07-30 (insurer logo row is now a capped marquee)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -363,6 +363,21 @@ but keeps the text inside the card.
 Figma frames are 1440px desktop / 402px mobile. Desktop gutter is `lg:px-28` (112px),
 mobile `px-4` (16px).
 
+**The insurer logo row is a marquee, not a static row.** See
+[`InsurerLogos.tsx`](components/hero/InsurerLogos.tsx). Two things there are easy to break:
+
+- The gap is **padding-right on each item**, not a flex `gap`. A copy's width therefore
+  includes its own trailing space, so two copies sit flush and `translateX(-50%)` lands
+  exactly on the second copy's first logo. Switch to a flex `gap` and there is one extra
+  gap between copies, so the loop visibly drifts.
+- Every logo frame is **59x32, except Hollard at 60x32**, at both breakpoints, with
+  `object-contain`. The source PNGs range from 4.6:1 to 1.9:1, so filling the box instead
+  would badly squash the wide marks.
+
+The animation is `--animate-marquee` in `globals.css`, running -50% -> 0 so logos travel
+left to right. It pauses on hover and is disabled under `prefers-reduced-motion`. The
+edge fade mask is ours, not in the Figma frame.
+
 **Cap section content with `mx-auto max-w-content`.** Figma lays every section out on a
 1216px column (1440 frame minus the 112px gutters), exposed as the `--container-content`
 token. Without the cap, content matches the design only at exactly 1440px and stretches
@@ -529,11 +544,9 @@ at 1440px and 402px and diff against the Figma frames.
       tabbing can still reach content behind it.
 - [ ] Nav and CTA links are placeholder anchors (`#about`, `#demo`, `#services`, `#blog`,
       `#contact`, `#claims`). They resolve as sections get built.
-- [ ] **The hero's insurer logo row still stretches on wide screens.** It uses
-      `lg:justify-between` on a full-width `ul`, so it spreads to 1696px at 1920 and
-      2336px at 2560 instead of holding Figma's 1216. Same fix as section 1:
-      `mx-auto max-w-content`. Not applied yet because it changes already-approved hero
-      work. The hero's three-card row measures wide too but is visually fine, since the
+- [x] ~~The hero's insurer logo row stretches on wide screens.~~ Fixed 2026-07-30 when the
+      row became a marquee — the viewport is now `max-w-content` and holds 1216 at any
+      width. The hero's three-card row still measures wide but is visually fine, since the
       cards are fixed-width and `justify-center` keeps them at 1216 centred.
 - [ ] The navbar's inner row spans the full viewport at any width. Figma only shows it at
       1440, so whether it should cap at 1216 on large screens is a design decision.
@@ -550,6 +563,22 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Insurer logo row became a marquee
+User asked for this row to stop spanning the full screen, to hold Figma's exact logo
+dimensions, and to scroll smoothly left to right.
+
+The viewport is now capped at `max-w-content`, so it holds 1216 at 1440 **and** at 1920,
+where it previously spread to 1696. Verified at 402/1440/1920.
+
+Logos sit in exact 59x32 boxes (60 for Hollard) at both breakpoints. The track is two
+identical copies with the gap carried as padding-right on each item, so the track measures
+exactly 2x one run — 2462 = 1231 x 2 on desktop, 1662 = 831 x 2 on mobile — and the -50%
+loop is seamless.
+
+Added `hover` pause, `prefers-reduced-motion` handling, and an edge fade mask (ours, not in
+the design). This closes the wide-screen stretch follow-up that had been open since the
+hero was built.
 
 ### 2026-07-30 — Footer link columns top-aligned
 User pointed out the mobile footer columns looked vertically centred. Cause was the `nav`

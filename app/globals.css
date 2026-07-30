@@ -48,6 +48,20 @@
      instead of letting content stretch edge to edge. Drives max-w-content. */
   --container-content: 1216px;
 
+  /* Insurer logo marquee. The track holds two identical copies of the list, so
+     translating a full -50% lands exactly on the start of the second copy and
+     the loop is seamless. Runs -50% -> 0 so the logos travel left to right. */
+  --animate-marquee: marquee 45s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
   /* Type families are injected by next/font in layout.tsx */
   --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
