@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (section 1 "Problem" built)
+**Last updated:** 2026-07-30 (mobile nav overlay)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -241,8 +241,16 @@ at 1440px and 402px and diff against the Figma frames.
 
 - [ ] Avatar PNGs in `public/avatars/` are ~1.4 MB each but render at 28px. Re-export at
       ~64px. Next.js optimises delivery, so this is repo weight, not user-facing.
-- [ ] The mobile menu open state is **not in Figma** — it was designed to match the system.
-      Worth the user's review, or a proper Figma frame.
+- [ ] The mobile menu open state is **not in Figma**. It is now a fixed full-height
+      overlay starting below the bar, with the toggle swapping to an X, links divided by
+      hairlines, and the CTA pinned to the bottom. `public/icons/close.svg` was authored
+      to match the exported hamburger (24x24, 1.5 stroke, round caps, `#FFFDFD`) rather
+      than exported from Figma, since no close icon exists there. Worth a proper frame.
+- [ ] The overlay has no open/close animation, because it is conditionally rendered so a
+      CSS transition has nothing to animate from. Would need an always-mounted panel with
+      a translate/opacity toggle.
+- [ ] The overlay does not trap focus. Escape closes it and the toggle is reachable, but
+      tabbing can still reach content behind it.
 - [ ] Nav and CTA links are placeholder anchors (`#about`, `#demo`, `#services`, `#blog`,
       `#contact`, `#claims`). They resolve as sections get built.
 - [ ] **The hero's insurer logo row still stretches on wide screens.** It uses
@@ -261,6 +269,21 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Mobile nav overlay
+Reworked the mobile menu per user request: the toggle now swaps to an X, the panel is
+fixed rather than in flow so it no longer pushes the page down, and it runs from below
+the bar to the bottom of the viewport.
+
+The bar's height is measured with a `ResizeObserver` and applied as the overlay's `top`,
+rather than hard-coded at 81px, so changing the logo or padding cannot leave a gap. The
+overlay renders outside `<header>` so it positions against the viewport rather than the
+bar. Also added Escape-to-close and an auto-close when crossing to desktop widths, which
+would otherwise strand the overlay open with its toggle hidden.
+
+Verified at 402x812: icon swaps, hero stays at y=131 open and closed (no shift), overlay
+is `fixed` with top=81 exactly matching header height and bottom=812 at the viewport
+edge, body scroll locks and unlocks, Escape closes.
 
 ### 2026-07-30 — Capped the section 1 grid at 1216px
 User asked for the desktop card grid (`20875-19672`) to have a max width and stay
