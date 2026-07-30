@@ -154,6 +154,11 @@ cards with 32px gaps, 367-wide mobile cards with 16px gaps):
 Figma frames are 1440px desktop / 402px mobile. Desktop gutter is `lg:px-28` (112px),
 mobile `px-4` (16px).
 
+**Cap section content with `mx-auto max-w-content`.** Figma lays every section out on a
+1216px column (1440 frame minus the 112px gutters), exposed as the `--container-content`
+token. Without the cap, content matches the design only at exactly 1440px and stretches
+on wider screens. Apply it to each section's content wrapper as sections are built.
+
 **Tailwind resolves conflicting `display` classes by its own property order, not by the
 order you write them in the class attribute.** Passing `hidden` to a component whose base
 class already sets `inline-flex` will silently lose. Wrap the component in a
@@ -240,6 +245,14 @@ at 1440px and 402px and diff against the Figma frames.
       Worth the user's review, or a proper Figma frame.
 - [ ] Nav and CTA links are placeholder anchors (`#about`, `#demo`, `#services`, `#blog`,
       `#contact`, `#claims`). They resolve as sections get built.
+- [ ] **The hero's insurer logo row still stretches on wide screens.** It uses
+      `lg:justify-between` on a full-width `ul`, so it spreads to 1696px at 1920 and
+      2336px at 2560 instead of holding Figma's 1216. Same fix as section 1:
+      `mx-auto max-w-content`. Not applied yet because it changes already-approved hero
+      work. The hero's three-card row measures wide too but is visually fine, since the
+      cards are fixed-width and `justify-center` keeps them at 1216 centred.
+- [ ] The navbar's inner row spans the full viewport at any width. Figma only shows it at
+      1440, so whether it should cap at 1216 on large screens is a design decision.
 - [ ] No tests and no CI yet.
 
 ---
@@ -248,6 +261,14 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Capped the section 1 grid at 1216px
+User asked for the desktop card grid (`20875-19672`) to have a max width and stay
+centred rather than filling the viewport. Added the `--container-content` token (1216px)
+and applied `mx-auto max-w-content` to the grid. Unchanged at 1440 and below; caps with
+equal margins at 1600/1920/2560 with cards holding 592px. While measuring, found the
+hero's insurer logo row has the same defect — logged under Known follow-ups, not fixed,
+because it changes already-approved hero work.
 
 ### 2026-07-30 — Section 1 (Problem) built, desktop + mobile
 Four illustrated cards in a 2x2 desktop grid, stacked on mobile. Each card wraps a

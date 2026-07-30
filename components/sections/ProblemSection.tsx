@@ -52,7 +52,7 @@ export function ProblemSection() {
         </p>
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-content grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8">
         {cards.map((card) => (
           <ProblemCard
             key={card.title}

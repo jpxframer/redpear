@@ -42,6 +42,11 @@
   --color-chat-canvas: #f4f3ee;
   --color-chat-outbound: #e7f8e8;
 
+  /* Figma lays every section's content out on a 1216px column (1440 frame minus
+     the 112px gutters). Capping at that keeps the design intact on wider screens
+     instead of letting content stretch edge to edge. Drives max-w-content. */
+  --container-content: 1216px;
+
   /* Type families are injected by next/font in layout.tsx */
   --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
