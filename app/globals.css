@@ -7,8 +7,30 @@
   --color-brand-white: #fffdfd;
 
   /* Neutrals */
+  --color-neutral-100: #f3f4f6;
   --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
   --color-neutral-500: #6b7280;
+  --color-neutral-700: #374151;
+
+  /* Diagram palette — the illustrated cards inside sections use a wider set of
+     status colours than the marketing surface does. Declared explicitly rather
+     than leaning on Tailwind's default palette, whose v4 OKLCH values do not
+     match these hexes exactly. */
+  --color-danger-pale: #fff5f5;
+  --color-danger-soft: #fee2e2;
+  --color-danger-border: #fca5a5;
+  --color-warn-soft: #fef3c7;
+  --color-warn-softer: #fef9c3;
+  --color-warn-ink: #d97706;
+  --color-warn-deep: #92400e;
+  --color-warn-mid: #f59e0b;
+  --color-ok-soft: #dcfce7;
+  --color-ok-ink: #16a34a;
+  --color-info-pale: #eff6ff;
+  --color-info-soft: #dbeafe;
+  --color-info-ink: #3b82f6;
 
   /* Product surfaces used inside the hero cards */
   --color-ink: #0f172a;
@@ -33,6 +55,18 @@
   --text-h1-mobile: 36px;
   --text-h1-mobile--line-height: 44px;
   --text-h1-mobile--letter-spacing: -0.72px;
+
+  --text-h2: 36px;
+  --text-h2--line-height: 44px;
+  --text-h2--letter-spacing: -0.72px;
+
+  --text-h4: 28px;
+  --text-h4--line-height: 36px;
+  --text-h4--letter-spacing: -0.56px;
+
+  --text-h4-mobile: 24px;
+  --text-h4-mobile--line-height: 32px;
+  --text-h4-mobile--letter-spacing: -0.48px;
 
   --text-h3: 32px;
   --text-h3--line-height: 40px;

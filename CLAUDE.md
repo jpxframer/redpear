@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (insurer logo sharpness fix)
+**Last updated:** 2026-07-30 (section 1 "Problem" built)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -120,7 +120,7 @@ named just "Section" in Figma. Named below by their heading copy.
 |---|---|---|---|---|---|
 | — | Nav bar | `20875-19503` | `20875-21353` | 80 | ✅ done |
 | — | Hero | `20875-19517` | `20875-20475` | 1204 | ✅ done |
-| 1 | Problem — "Insurance Shouldn't Be Slowed Down by Legacy Systems" | `20875-19668` | `20875-20550` | 1399 | ⬜ |
+| 1 | Problem — "Insurance Shouldn't Be Slowed Down by Legacy Systems" | `20875-19668` | `20875-20550` | 1399 | ✅ done |
 | 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ⬜ |
 | 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ⬜ |
 | 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ⬜ |
@@ -135,6 +135,16 @@ correlates on height — but the pairing is **inferred, not confirmed**. Verify 
 node really is the same section when you open each one.
 
 Sections 1, 2 and 5 are the large ones; 8 and 9 are small.
+
+**Section 1 card node IDs** (2x2 grid on desktop, stacked on mobile; 592x506 desktop
+cards with 32px gaps, 367-wide mobile cards with 16px gaps):
+
+| Card | Desktop | Mobile |
+|---|---|---|
+| Manual Claims Processing | `20875-19673` | `20875-20556` |
+| Disconnected Systems | `20875-19736` | `20875-20619` |
+| Poor Customer Experience | `20875-19802` | `20875-20685` |
+| Limited Insights | `20875-19860` | `20875-20743` |
 
 ---
 
@@ -173,6 +183,15 @@ the 2x srcset candidate reports `naturalWidth === 64`, per the HTML spec. To jud
 sharpness, reload `img.currentSrc` into a standalone `Image` (no srcset, so no correction)
 and measure that. Measuring the wrong thing here produced a confident false "UPSCALED"
 verdict on output that was already correct.
+
+**Tailwind's preflight sets `line-height: 1.5`; Figma's `leading-[normal]` is ~1.2.**
+Anywhere a design specifies `leading-[normal]` on dense micro-copy, set
+`leading-[normal]` on a container so it inherits. Left unset, this alone made every
+section-1 card ~30px taller than its Figma frame. See `DiagramShell` in
+[`ProblemCard.tsx`](components/problem/ProblemCard.tsx).
+
+**A `//` comment cannot go inside a JSX opening tag.** It is valid immediately after
+`return (`, before the element, but placing it between attributes is a syntax error.
 
 **Never run `npm run build` while `npm run dev` is running.** They share the `.next`
 directory, so the production build overwrites the dev server's compiled assets underneath
@@ -222,6 +241,27 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 1 (Problem) built, desktop + mobile
+Four illustrated cards in a 2x2 desktop grid, stacked on mobile. Each card wraps a
+distinct diagram: claims pipeline, system topology, customer journey, analytics
+dashboard. New components under [`components/problem/`](components/problem/) with a
+shared `ProblemCard` / `DiagramShell` / `DiagramBadge` / `MicroTag` / `DiagramCallout`
+vocabulary the later sections should reuse.
+
+Added `text-h2`, `text-h4`, `text-h4-mobile` type tokens and a diagram status palette
+(danger/warn/ok/info) to `globals.css`. The palette is declared explicitly rather than
+using Tailwind's defaults, whose v4 OKLCH values do not match Figma's hexes.
+
+The user's node list had two errors worth remembering: they listed three desktop cards
+when there are four (`20875-19802`, "Poor Customer Experience", was missing), and gave
+`20875-20693` for mobile card 3, which is the Workflow Diagram nested inside the real
+card `20875-20685`. Verify card counts against the grid dimensions rather than trusting
+the pasted list.
+
+Cards measure 510-519 tall against Figma's 506, and the section 1417 against 1399. The
+residual is font-metric rounding between Figma and the web fonts, not a structural
+error. Added `scroll-mt-20` so the `#about` anchor clears the sticky navbar.
 
 ### 2026-07-30 — Unstyled page after a build/dev collision
 User reported the local site rendering as raw unstyled HTML. Cause was running
