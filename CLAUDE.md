@@ -174,6 +174,14 @@ sharpness, reload `img.currentSrc` into a standalone `Image` (no srcset, so no c
 and measure that. Measuring the wrong thing here produced a confident false "UPSCALED"
 verdict on output that was already correct.
 
+**Never run `npm run build` while `npm run dev` is running.** They share the `.next`
+directory, so the production build overwrites the dev server's compiled assets underneath
+it. The dev server keeps answering `200` and its log looks healthy, but the page it serves
+references a stylesheet that no longer exists, so the browser renders raw unstyled HTML.
+The symptom looks like a catastrophic CSS failure and is nothing of the sort. Recovery:
+stop the dev server, `Remove-Item .next -Recurse -Force`, restart. Either stop dev before
+building, or build against a separate `--distdir`.
+
 **Never round-trip a text file through PowerShell 5.1 `Get-Content`/`Set-Content`.**
 `Get-Content -Raw` reads as ANSI, not UTF-8, so writing it back with `-Encoding utf8`
 double-encodes every non-ASCII character and turns em dashes and emoji into mojibake. This
@@ -214,6 +222,15 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Unstyled page after a build/dev collision
+User reported the local site rendering as raw unstyled HTML. Cause was running
+`npm run build` in the same step as the screenshot check while `npm run dev` was still
+serving on port 3000: both use `.next`, so the production build clobbered the dev server's
+assets. The dev server still returned `200` for the page and its log showed only
+successful compiles, but `/_next/static/css/app/layout.css` returned `404`. Fixed by
+stopping dev, deleting `.next`, and restarting. Stylesheet now serves 29,715 bytes with
+the tokens and gloss utilities intact. No code was wrong; nothing needed reverting.
 
 ### 2026-07-30 — Fixed blurry insurer logos
 User reported the insurer logos looked blurry. Cause was `h-8 w-auto` in
