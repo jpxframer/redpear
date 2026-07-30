@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30
+**Last updated:** 2026-07-30 (remaining landing sections mapped)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -113,15 +113,28 @@ Screens 3–8 have not been opened yet; fill in their real names when each is pi
 Built section by section. The user supplies node URLs per section — **do not build ahead
 of what has been handed over.**
 
-| Section | Desktop node | Mobile node | Status |
-|---|---|---|---|
-| Nav bar | `20875-19503` | `20875-21353` | ✅ done |
-| Hero | `20875-19517` | `20875-20475` | ✅ done |
-| Remaining sections | — | — | ⬜ awaiting node URLs |
+Desktop landing (`20875-19501`) is 1440×9246 and holds the hero plus nine sections, all
+named just "Section" in Figma. Named below by their heading copy.
 
-Mobile landing page sections live under `20875-20474` as sibling "Section Mobile" frames
-at `20875-20550`, `20875-20805`, `20875-20957`, `20875-21077`, `20875-21126`,
-`20875-21156`, `20875-21190`, `20875-21227`, `20875-21251`.
+| # | Section | Desktop node | Mobile node | Desktop height | Status |
+|---|---|---|---|---|---|
+| — | Nav bar | `20875-19503` | `20875-21353` | 80 | ✅ done |
+| — | Hero | `20875-19517` | `20875-20475` | 1204 | ✅ done |
+| 1 | Problem — "Insurance Shouldn't Be Slowed Down by Legacy Systems" | `20875-19668` | `20875-20550` | 1399 | ⬜ |
+| 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ⬜ |
+| 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ⬜ |
+| 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ⬜ |
+| 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ⬜ |
+| 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ⬜ |
+| 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ⬜ |
+| 8 | CTA band — "Ready to Modernize Your Insurance Operations?" | `20875-20347` | `20875-21227` | 488 | ⬜ |
+| 9 | Footer — logo, newsletter signup | `20875-20371` | `20875-21251` | 378 | ⬜ |
+
+Desktop and mobile nodes are paired by document order, which matches on section count and
+correlates on height — but the pairing is **inferred, not confirmed**. Verify the mobile
+node really is the same section when you open each one.
+
+Sections 1, 2 and 5 are the large ones; 8 and 9 are small.
 
 ---
 
@@ -174,6 +187,13 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Mapped the remaining landing sections
+Inspected `20875-19501` and enumerated the nine remaining landing sections with their
+heading copy, node IDs and heights (table above). All nine are named just "Section" in
+Figma, so the headings are the only way to tell them apart — that mapping is now recorded
+and should not need re-deriving. Mobile counterparts paired by document order; pairing is
+inferred, not verified.
 
 ### 2026-07-30 — Project doc
 Added this file so state survives across chats.
