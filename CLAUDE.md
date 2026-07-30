@@ -190,6 +190,13 @@ Anywhere a design specifies `leading-[normal]` on dense micro-copy, set
 section-1 card ~30px taller than its Figma frame. See `DiagramShell` in
 [`ProblemCard.tsx`](components/problem/ProblemCard.tsx).
 
+**Pass git commit messages via `git commit -F <file>`, never inline.** PowerShell 5.1
+does not escape quotes when passing arguments to native executables, so a message
+containing double quotes gets split and git reads the tail as a pathspec. A here-string
+does not help. Write the message file with the **Write tool**, not
+`Set-Content -Encoding utf8` — the latter emits a UTF-8 BOM that git keeps, leaving a
+stray `﻿` at the front of the commit subject.
+
 **A `//` comment cannot go inside a JSX opening tag.** It is valid immediately after
 `return (`, before the element, but placing it between attributes is a syntax error.
 
