@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (renamed from CLAUDE.md; 6 of 10 landing blocks built)
+**Last updated:** 2026-07-30 (section 7 "Insights" built; 7 of 10 landing blocks)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -27,11 +27,11 @@ Landing page, section by section. Six of ten blocks are built and pushed.
 | 4 — Audiences | ✅ |
 | 5 — Why RedPear | ✅ |
 | 6 — Case studies | ✅ |
-| 7 — Insights & Resources (blog) | ⬜ |
+| 7 — Insights & Resources (blog) | ✅ |
 | 8 — CTA band | ⬜ |
 | 9 — Footer (+ newsletter form) | ⬜ |
 
-**Next up:** section 3 closes the gap; then 7, 8, 9 finish the page. Screens 2–8 of the
+**Next up:** section 3 closes the gap; then 8 and 9 finish the page. Screens 2–8 of the
 eight core screens have not been started at all.
 
 **Two decisions still open**, both worth settling before the sections that need them:
@@ -149,6 +149,11 @@ converted to px in the tokens:
 | `text-body-lg` | 18/28 | Paragraph/Large/Regular |
 | `text-body-md` | 16/24 | Paragraph/Medium/Regular |
 | `text-body-sm` | 14/20 | Paragraph/Small/Regular |
+| `text-label-lg` | 16/18 | Label/Large/Regular |
+| `text-label-sm` | 12/14 | Label/Small/Medium and /Regular |
+
+The label styles run deliberately tighter than the paragraph scale — 16px copy on an 18px
+line. Used by the section 7 blog cards.
 
 `text-h4-mobile` and `text-h5` carry identical values but different Figma names; keep both
 so components read the way the design file does.
@@ -206,7 +211,7 @@ named just "Section" in Figma. Named below by their heading copy.
 | 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ✅ done |
 | 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ✅ done |
 | 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ✅ done |
-| 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ⬜ |
+| 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ✅ done |
 | 8 | CTA band — "Ready to Modernize Your Insurance Operations?" | `20875-20347` | `20875-21227` | 488 | ⬜ |
 | 9 | Footer — logo, newsletter signup | `20875-20371` | `20875-21251` | 378 | ⬜ |
 
@@ -295,6 +300,24 @@ and stacked on mobile, all `p-32` with a 40px avatar.
 | Zola Ndlovu | `20875-20289` | `20875-21169` | testimonials/zola-ndlovu.png |
 | Amara Okafor | `20875-20296` | `20875-21176` | testimonials/amara-okafor.png |
 | Kwame Mensah | `20875-20303` | `20875-21183` | testimonials/kwame-mensah.png |
+
+**Section 7 card node IDs.** Three blog cards, 3-up on desktop (389.33x433, 24px gaps) and
+stacked on mobile (370x417, 16px gaps). Card padding is the only thing that changes across
+breakpoints — 24 desktop, 16 mobile — so the inner content is an identical 385px tall at
+both, thumbnail included. Type does not change: 20/28 title, 16/18 excerpt, 12/14 meta.
+
+| Card | Desktop | Mobile | Thumbnail |
+|---|---|---|---|
+| Why WhatsApp is the Ultimate… | `20875-20317` | `20875-21197` | insights/whatsapp-distribution.png |
+| Ditching the Queues… | `20875-20327` | `20875-21207` | insights/claims-pipeline.png |
+| Designing Secure Chat Pipelines… | `20875-20337` | `20875-21217` | insights/secure-chat-pipelines.png |
+
+Thumbnails export at 1344x768 (aspect 1.75) into a 341x220 slot (aspect 1.55), so they are
+`object-cover` and crop slightly at the sides. That matches how Figma renders them.
+
+One inconsistency normalised rather than reproduced: card 1's meta row is `leading-20`
+where cards 2 and 3 are `leading-14`. The row is a fixed 15px with `items-center`, so the
+difference is not visible; all three use `text-label-sm` (12/14).
 
 Two oddities remain here, both reproduced as designed and flagged to the user:
 
@@ -437,6 +460,12 @@ at 1440px and 402px and diff against the Figma frames.
       writing to a database, or a `mailto:` stopgap. Blocks finishing section 9.
 - [ ] **Sections 6 and 7 content is hardcoded.** Fine for now, but if it should be
       CMS-driven that shapes how section 7 gets built.
+- [ ] **Section 7's mobile copy is on the desktop scale** — 36/44 heading and 18/28 sub at
+      both breakpoints (`20875-21194` / `20875-21195`). This is the same thing that was
+      flagged and then corrected in Figma for section 6. Built as designed; likely wants
+      the same 28/36 + 16/24 step-down.
+- [ ] **Section 7 blog cards are not links.** Figma has no URLs on them, so they are plain
+      `article` elements. They need hrefs once the blog exists.
 - [ ] **Section 6: Amara Okafor's card is drawn at a 20px radius**; the other three are
       24px. Reproduced as designed, isolated behind `TestimonialCard`'s `radiusClass`.
 - [ ] **Section 6: quote punctuation is mixed** — straight quotes on cards 1 and 2, curly
@@ -482,6 +511,20 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 7 (Insights & Resources) built, desktop + mobile
+Three blog cards, 3-up on desktop and stacked on mobile, via
+[`ArticleCard`](components/insights/ArticleCard.tsx). Added `text-label-lg` (16/18) and
+`text-label-sm` (12/14) tokens for the tighter label scale these cards use.
+
+**Pixel-exact at both breakpoints** — desktop 1440x693 and mobile 402x1493 both match
+Figma exactly, as do every card (389x433 / 370x417) and thumbnail (341x220 / 338x220).
+
+The section carries `id="blog"`, so the navbar's Blog link now resolves. Cards are not
+links yet; Figma has no URLs on them.
+
+Section 7's mobile copy repeats section 6's original issue — desktop type scale at both
+breakpoints. Built as designed and flagged.
 
 ### 2026-07-30 — Renamed CLAUDE.md to PROJECT.md
 User asked for the rename; done with `git mv` so history follows the file. Claude Code

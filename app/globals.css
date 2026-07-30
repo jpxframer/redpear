@@ -97,6 +97,14 @@
 
   --text-body-sm: 14px;
   --text-body-sm--line-height: 20px;
+
+  /* Label styles run tighter than the paragraph scale — 16px copy on an 18px
+     line, 12px meta on 14. Used by the blog cards in section 7. */
+  --text-label-lg: 16px;
+  --text-label-lg--line-height: 18px;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 14px;
 }
 
 /* The "Gloss" effect from Figma: a drop shadow plus three inset shadows that

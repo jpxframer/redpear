@@ -5,6 +5,7 @@ import { SolutionsSection } from "@/components/sections/SolutionsSection";
 import { AudiencesSection } from "@/components/sections/AudiencesSection";
 import { WhySection } from "@/components/sections/WhySection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
+import { InsightsSection } from "@/components/sections/InsightsSection";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         <AudiencesSection />
         <WhySection />
         <TestimonialsSection />
+        <InsightsSection />
       </main>
     </>
   );
