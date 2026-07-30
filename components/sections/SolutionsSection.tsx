@@ -57,6 +57,7 @@ export function SolutionsSection() {
             imageAlt="A WhatsApp conversation where the RedPear assistant renews a vehicle policy and confirms payment"
           />
           <BentoCard
+            mobileBodyLarge
             title="Insurance Platforms"
             body="Seamless multi-tenant core administration system for distributors and agents."
             image="/solutions/insurance-platforms.png"

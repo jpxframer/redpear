@@ -14,7 +14,11 @@ export function SolutionCard({
     <article className="gloss-white flex h-full flex-col items-start rounded-2xl border border-neutral-100 bg-brand-white p-4">
       <div className="flex w-full flex-col gap-4">
         <div className="flex w-full flex-col gap-2">
-          <h3 className="font-display text-h6 font-medium text-brand-black">{title}</h3>
+          {/* Mobile is deliberately larger than desktop here: Figma sets these
+              headings at 24/32 on mobile and 20/28 on desktop. */}
+          <h3 className="font-display text-h4-mobile font-medium text-brand-black lg:text-h6">
+            {title}
+          </h3>
           <p className="text-body-md text-neutral-500">{body}</p>
         </div>
         {children}

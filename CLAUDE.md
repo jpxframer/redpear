@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (section 2 "Solutions" built)
+**Last updated:** 2026-07-30 (section 2 mobile card type revised)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -160,8 +160,22 @@ columns, within 4px); small cards are 286x290 with 24px gaps.
 | Consulting & Integration | `20875-20041` | `20875-20924` |
 
 Both bento visuals are flattened PNG exports (1644x1290 and 1632x1290), not DOM. The four
-small cards' micro-visuals are rebuilt as DOM. Bento type does **not** change between
-breakpoints — 28/36 Geist and 18/28 Inter at both sizes.
+small cards' micro-visuals are rebuilt as DOM.
+
+**Section 2 card type, as revised by the user on 2026-07-30.** Verified against the live
+DOM at both breakpoints:
+
+| Card | Heading mobile | Heading desktop | Body mobile | Body desktop |
+|---|---|---|---|---|
+| AI Solutions | 24/32 semibold | 28/36 semibold | 16/24 | 18/28 |
+| Insurance Platforms | 24/32 medium | 28/36 medium | **18/28** | 18/28 |
+| The four small cards | 24/32 medium | 20/28 medium | 16/24 | 16/24 |
+
+Two things here look wrong but are deliberate. The small-card headings are **larger on
+mobile than desktop** (24 vs 20). And Insurance Platforms' mobile body is 18/28 where the
+other five are 16/24 — reproduced as designed via `BentoCard`'s `mobileBodyLarge` prop,
+and flagged to the user as a likely oversight. If a future Figma pass sets it to 16/24,
+drop the prop.
 
 **Per the user, mobile bento cards use 16px padding, not Figma's 24px.** Desktop keeps 24.
 This is a deliberate deviation, not a mistake — see `BentoCard`'s `p-4 lg:p-6`.
@@ -300,6 +314,14 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 2 mobile card type revised
+User updated the mobile text sizes in Figma and supplied all 12 text nodes. Mobile
+headings across all six cards are now 24/32; the four small-card headings are therefore
+larger on mobile than on desktop (20/28). Bodies are 16/24 except Insurance Platforms,
+which Figma sets at 18/28 — implemented as designed behind `BentoCard`'s
+`mobileBodyLarge` prop and flagged as a likely oversight. Desktop is unchanged. All 12
+heading/body pairs verified against computed styles at 402 and 1440: 12 pass, 0 fail.
 
 ### 2026-07-30 — Section 2 (Solutions) built, desktop + mobile
 Two bento cards over a row of four small cards on desktop, all six stacked on mobile.

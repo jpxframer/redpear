@@ -8,6 +8,12 @@ type BentoCardProps = {
   /** The featured card is set in semibold and hairlined a shade lighter. */
   featured?: boolean;
   priority?: boolean;
+  /**
+   * Figma sets Insurance Platforms' mobile body at 18/28 while the other five
+   * cards in this section use 16/24. Reproduced as designed rather than
+   * normalised — flagged to the user as a likely oversight.
+   */
+  mobileBodyLarge?: boolean;
 };
 
 export function BentoCard({
@@ -17,6 +23,7 @@ export function BentoCard({
   imageAlt,
   featured = false,
   priority = false,
+  mobileBodyLarge = false,
 }: BentoCardProps) {
   return (
     <article
@@ -26,13 +33,19 @@ export function BentoCard({
     >
       <div className="flex w-full flex-col gap-4">
         <h3
-          className={`font-display text-h4 text-brand-black ${
+          className={`font-display text-h4-mobile text-brand-black lg:text-h4 ${
             featured ? "font-semibold" : "font-medium"
           }`}
         >
           {title}
         </h3>
-        <p className="text-body-lg text-neutral-500">{body}</p>
+        <p
+          className={`text-neutral-500 ${
+            mobileBodyLarge ? "text-body-lg" : "text-body-md lg:text-body-lg"
+          }`}
+        >
+          {body}
+        </p>
       </div>
 
       <div className="relative h-[255px] w-full shrink-0 overflow-hidden rounded-2xl lg:h-[430px]">
