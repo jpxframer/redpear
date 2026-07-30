@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (section 8 "CTA band" built; 8 of 10 landing blocks)
+**Last updated:** 2026-07-30 (footer built; only section 3 left on the landing page)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -29,10 +29,13 @@ Landing page, section by section. Six of ten blocks are built and pushed.
 | 6 — Case studies | ✅ |
 | 7 — Insights & Resources (blog) | ✅ |
 | 8 — CTA band | ✅ |
-| 9 — Footer (+ newsletter form) | ⬜ |
+| 9 — Footer (+ newsletter form) | ✅ (form not wired) |
 
-**Next up:** section 9 (footer) is the last block, and section 3 still needs to fill the
-gap in the middle. Screens 2–8 of the eight core screens have not been started at all.
+**Next up: section 3 is the only landing block left.** Everything else is built. Screens
+2–8 of the eight core screens have not been started at all.
+
+**Blocking launch, not just polish:** the footer newsletter form has no destination and
+the CTA buttons have no booking flow. Both are logged under Known follow-ups.
 
 **Two decisions still open**, both worth settling before the sections that need them:
 
@@ -214,7 +217,11 @@ named just "Section" in Figma. Named below by their heading copy.
 | 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ✅ done |
 | 7 | Blog — "Insights & Resources" | `20875-20310` | `20875-21190` | 693 | ✅ done |
 | 8 | CTA band — "Ready to Modernize Your Insurance Operations?" | `20875-20347` | `20875-21227` | 488 | ✅ done |
-| 9 | Footer — logo, newsletter signup | `20875-20371` | `20875-21251` | 378 | ⬜ |
+| 9 | Footer — logo, newsletter signup | `20875-20371` | `20875-21251` | 378 | ✅ done |
+
+The footer's desktop node is `20875-20371` (its `Content` child is `20875-20372`). Note
+the user supplied `20875-21228` for it, which is actually the section 8 **mobile CTA
+card** — always sanity-check a pasted desktop node against the map above.
 
 Desktop and mobile nodes are paired by document order, which matches on section count and
 correlates on height — but the pairing is **inferred, not confirmed**. Verify the mobile
@@ -380,6 +387,12 @@ render *wider* than designed and upscales them past their native resolution.
 natural size (59x32) and will not render beyond it. 128px is enough for a 59px box at 2x
 (about 1.08x), but there is no headroom for a 3x display.
 
+**Next's dev overlay injects its own `<footer>` earlier in the DOM than yours.** So
+`document.querySelector("footer")` in a verification script silently matches the overlay,
+not the page footer, and every child lookup off it returns null. Reach the real one
+through a known descendant: `document.querySelector("#newsletter-email").closest("footer")`.
+The same risk applies to any generic tag selector while the dev server is running.
+
 **Lazy images below the fold report as "broken" in element screenshots.** Puppeteer's
 `elementHandle.screenshot()` scrolls the element into view but does not wait for the lazy
 images that scroll just triggered, so they capture blank and `naturalWidth` reads 0. Walk
@@ -457,8 +470,12 @@ at 1440px and 402px and diff against the Figma frames.
 
 **Awaiting a decision from the user**
 
-- [ ] **Footer newsletter form has no destination.** Mailchimp, Resend, a route handler
-      writing to a database, or a `mailto:` stopgap. Blocks finishing section 9.
+- [ ] **Footer newsletter form is built but NOT WIRED.** Its `onSubmit` only calls
+      `preventDefault`, so a visitor can type an email, click Subscribe, and nothing
+      happens. The markup is correct and accessible (`type="email"`, `required`, label
+      bound to input); it just needs an action. Mailchimp, Resend, a route handler writing
+      to a database, or a `mailto:` stopgap. **Do not launch without this.**
+      See [`NewsletterForm.tsx`](components/layout/NewsletterForm.tsx).
 - [ ] **Sections 6 and 7 content is hardcoded.** Fine for now, but if it should be
       CMS-driven that shapes how section 7 gets built.
 - [ ] **Section 7's mobile copy is on the desktop scale** — 36/44 heading and 18/28 sub at
@@ -515,6 +532,25 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 9 (Footer) built — landing page complete apart from section 3
+Logo, tagline, newsletter form, two link columns, copyright and three social icons, via
+[`Footer`](components/layout/Footer.tsx) and
+[`NewsletterForm`](components/layout/NewsletterForm.tsx). Rendered as `<footer>` outside
+`<main>`.
+
+Desktop 1440x381 against Figma's 380, mobile 402x645 against 643. Link columns measure
+284 and 177 — exact at both breakpoints.
+
+The form input needed `leading-[1.2]` rather than the label's 14/20: Figma's Input frame
+is 16.8px tall, i.e. normal leading, and using 20px made the form 5px too tall.
+
+**The form is deliberately not wired** — `onSubmit` only calls `preventDefault`. Markup is
+correct and accessible, but it needs a destination before launch.
+
+Two things cost time here and are now in Conventions: Next's dev overlay renders its own
+`<footer>`, which broke a verification script; and a `//` comment was placed between JSX
+attributes again, which is a syntax error.
 
 ### 2026-07-30 — Section 8 (CTA band) built, desktop + mobile
 A single red card in [`CtaSection`](components/sections/CtaSection.tsx). Adds the
