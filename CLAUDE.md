@@ -5,7 +5,7 @@
 > of every step (see [Update protocol](#update-protocol) at the bottom) so a fresh
 > chat can pick up without re-deriving anything.
 
-**Last updated:** 2026-07-30 (section 6 "Case studies" built; section 3 still skipped)
+**Last updated:** 2026-07-30 (section 6 mobile copy scale corrected; section 3 still skipped)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -233,12 +233,14 @@ and stacked on mobile, all `p-32` with a 40px avatar.
 | Amara Okafor | `20875-20296` | `20875-21176` | testimonials/amara-okafor.png |
 | Kwame Mensah | `20875-20303` | `20875-21183` | testimonials/kwame-mensah.png |
 
-Three deliberate oddities here, all reproduced as designed and flagged to the user:
+Two oddities remain here, both reproduced as designed and flagged to the user:
 
-1. **Section 6 keeps the desktop type scale on mobile** — 36/44 heading and 18/28 body at
-   both breakpoints, unlike sections 1, 2, 4 and 5 which step down.
-2. **Amara Okafor's card has a 20px radius**; the other three are 24px.
-3. **Quote punctuation is mixed** — cards 1 and 2 use straight quotes, 3 and 4 curly.
+1. **Amara Okafor's card has a 20px radius**; the other three are 24px.
+2. **Quote punctuation is mixed** — cards 1 and 2 use straight quotes, 3 and 4 curly.
+
+Section copy steps down on mobile like every other section (28/36 heading, 16/24 sub). It
+originally carried the desktop scale at both breakpoints; the user corrected that in Figma
+on 2026-07-30 after it was flagged. The card **quotes** stay 18/28 at both breakpoints.
 
 One deliberate *deviation*: Figma sets the profile meta `nowrap`, which overflows the card
 on mobile for the longer job titles (its own Profile Wrapper measures 320px inside a 306px
@@ -396,6 +398,12 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 6 mobile copy scale corrected
+User updated `20875-21159` / `20875-21160` in Figma so the section heading and sub step
+down on mobile (28/36 and 16/24) like every other section, rather than carrying the
+desktop scale. This was one of the three oddities flagged when section 6 shipped; it is
+now resolved, and the mobile section measures 1456. Card quotes are unchanged at 18/28.
 
 ### 2026-07-30 — Section 6 (Case studies) built, desktop + mobile
 Four testimonial cards, 2x2 on desktop and stacked on mobile, via

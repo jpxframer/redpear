@@ -38,13 +38,11 @@ const testimonials = [
 export function TestimonialsSection() {
   return (
     <section className="flex scroll-mt-20 flex-col gap-6 px-4 py-6 lg:gap-[50px] lg:px-28 lg:py-[50px]">
-      {/* Unlike sections 1, 2, 4 and 5, this section keeps the desktop type scale
-          on mobile — 36/44 heading and 18/28 body at both breakpoints. */}
       <div className="mx-auto flex w-full flex-col gap-[10px] text-center lg:w-[800px]">
-        <h2 className="font-display text-h2 font-medium text-brand-black">
+        <h2 className="font-display text-h3-mobile font-medium text-brand-black lg:text-h2">
           Helping Organizations Modernize Insurance
         </h2>
-        <p className="text-body-lg text-neutral-500">
+        <p className="text-body-md text-neutral-500 lg:text-body-lg">
           See how leaders are deploying chat-native experiences to redefine claims and
           distribution.
         </p>
