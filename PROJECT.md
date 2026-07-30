@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (section 3 built — landing page structurally complete)
+**Last updated:** 2026-07-30 (section 7 mobile type stepped down; landing page complete)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -496,10 +496,10 @@ at 1440px and 402px and diff against the Figma frames.
       (`20875-20960` / `20875-20961` say "Solutions Built for Modern Insurance
       Organizations"). The build uses the correct desktop copy at both breakpoints. Fix
       the Figma frame; the code already does the right thing.
-- [ ] **Section 7's mobile copy is on the desktop scale** — 36/44 heading and 18/28 sub at
-      both breakpoints (`20875-21194` / `20875-21195`). This is the same thing that was
-      flagged and then corrected in Figma for section 6. Built as designed; likely wants
-      the same 28/36 + 16/24 step-down.
+- [ ] **Section 7's Figma mobile nodes still carry the desktop type scale**
+      (`20875-21194` / `20875-21195` are 36/44 and 18/28). **The code deliberately
+      diverges** — the user asked for the step-down to 28/36 + 16/24 so it matches every
+      other section. Update the Figma frame to match; no code change needed when you do.
 - [ ] **Section 7 blog cards are not links.** Figma has no URLs on them, so they are plain
       `article` elements. They need hrefs once the blog exists.
 - [ ] **The section 8 CTA button links to `#demo`, which is the section it sits in** — so
@@ -550,6 +550,17 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 7 mobile copy stepped down
+User asked for section 7's mobile heading and sub to match the rest of the page. Figma's
+nodes are unchanged (still 36/44 + 18/28), so **the code now intentionally diverges** from
+the design file until that frame is corrected. Marked in the component and in Known
+follow-ups.
+
+Verified every section heading across the whole page afterwards. Mobile now uses 28/36
+with a 16/24 sub for all seven content sections; desktop 36/44 with 18/28. The only
+deliberate outliers are the hero's insurer-logo heading (32/40 desktop, an H3) and the CTA
+band (52/56 desktop, 32/40 mobile).
 
 ### 2026-07-30 — Section 3 (Platform) built — landing page structurally complete
 The last gap. A single wide card: copy column beside a Layered Canvas holding a full

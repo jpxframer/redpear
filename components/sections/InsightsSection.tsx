@@ -36,11 +36,18 @@ export function InsightsSection() {
       id="blog"
       className="flex scroll-mt-20 flex-col gap-6 px-4 py-6 lg:gap-[50px] lg:px-28 lg:py-[50px]"
     >
+      {/*
+        Deliberate divergence from Figma, at the user's request. The mobile nodes
+        (20875-21194 / 20875-21195) are still on the desktop scale — 36/44 and
+        18/28 — which made this heading much larger than every other section on
+        mobile. Stepped down to match, as was done for section 6. Once the Figma
+        frame is corrected this comment can go.
+      */}
       <div className="mx-auto flex w-full flex-col gap-[10px] text-center lg:w-[800px]">
-        <h2 className="font-display text-h2 font-medium text-brand-black">
+        <h2 className="font-display text-h3-mobile font-medium text-brand-black lg:text-h2">
           Insights &amp; Resources
         </h2>
-        <p className="text-body-lg text-neutral-500">
+        <p className="text-body-md text-neutral-500 lg:text-body-lg">
           Stay informed with the latest thinking on insurance innovation, AI, customer
           engagement, and digital transformation.
         </p>
