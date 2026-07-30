@@ -52,15 +52,16 @@ export function Footer() {
             <NewsletterForm />
           </div>
 
+          {/* items-start keeps each column sized to its own content. Without it the
+              columns stretch to match the tallest, and their contents end up
+              vertically centred against it — noticeable on mobile, where
+              "Transformation Consulting" wraps and makes the Services column taller. */}
           <nav
             aria-label="Footer"
-            className="flex w-full flex-wrap gap-x-4 gap-y-6 lg:min-w-0 lg:flex-1 lg:flex-nowrap lg:justify-end lg:gap-6"
+            className="flex w-full flex-wrap items-start gap-x-4 gap-y-6 lg:min-w-0 lg:flex-1 lg:flex-nowrap lg:justify-end lg:gap-6"
           >
             {columns.map((column) => (
-              <div
-                key={column.title}
-                className="flex min-w-0 flex-1 flex-col justify-center gap-2"
-              >
+              <div key={column.title} className="flex min-w-0 flex-1 flex-col gap-2">
                 <h2 className="text-body-lg font-medium text-brand-black">
                   {column.title}
                 </h2>

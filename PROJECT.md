@@ -551,6 +551,17 @@ at 1440px and 402px and diff against the Figma frames.
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
 
+### 2026-07-30 — Footer link columns top-aligned
+User pointed out the mobile footer columns looked vertically centred. Cause was the `nav`
+having no `align-items`, so flex defaulted to `stretch`: both columns grew to the height of
+the taller Services column (whose "Transformation Consulting" wraps to two lines), and each
+column's own `justify-center` then centred its contents inside that stretched box. Figma
+sets `items-start` on this container at **both** breakpoints. Added it and dropped the now
+redundant `justify-center`.
+
+Columns now measure 177x204 and 177x232 on mobile, 284x204 on desktop, with both headings
+at a 0px offset from the top of the row.
+
 ### 2026-07-30 — Section 7 mobile copy stepped down
 User asked for section 7's mobile heading and sub to match the rest of the page. Figma's
 nodes are unchanged (still 36/44 + 18/28), so **the code now intentionally diverges** from
