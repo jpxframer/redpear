@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (footer built; only section 3 left on the landing page)
+**Last updated:** 2026-07-30 (section 3 built — landing page structurally complete)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Owner:** jpxframer / promisejames0501@gmail.com
 
@@ -23,7 +23,7 @@ Landing page, section by section. Six of ten blocks are built and pushed.
 | Hero | ✅ |
 | 1 — Problem / Legacy Systems | ✅ |
 | 2 — Solutions | ✅ |
-| **3 — Platform / Technology** | ⬜ **skipped — the one gap in the page** |
+| 3 — Platform / Technology | ✅ |
 | 4 — Audiences | ✅ |
 | 5 — Why RedPear | ✅ |
 | 6 — Case studies | ✅ |
@@ -31,11 +31,13 @@ Landing page, section by section. Six of ten blocks are built and pushed.
 | 8 — CTA band | ✅ |
 | 9 — Footer (+ newsletter form) | ✅ (form not wired) |
 
-**Next up: section 3 is the only landing block left.** Everything else is built. Screens
-2–8 of the eight core screens have not been started at all.
+**The landing page is structurally complete.** Every block is built and responsive.
 
-**Blocking launch, not just polish:** the footer newsletter form has no destination and
-the CTA buttons have no booking flow. Both are logged under Known follow-ups.
+**Next up:** screens 2–8 of the eight core screens, none of which have been started.
+
+**Blocking launch, not just polish:** the footer newsletter form has no destination, the
+CTA buttons have no booking flow, and most nav/footer links are placeholder anchors. All
+logged under Known follow-ups.
 
 **Two decisions still open**, both worth settling before the sections that need them:
 
@@ -211,7 +213,7 @@ named just "Section" in Figma. Named below by their heading copy.
 | — | Hero | `20875-19517` | `20875-20475` | 1204 | ✅ done |
 | 1 | Problem — "Insurance Shouldn't Be Slowed Down by Legacy Systems" | `20875-19668` | `20875-20550` | 1399 | ✅ done |
 | 2 | Solutions — "Solutions Built for Modern Insurance Organizations" | `20875-19922` | `20875-20805` | 1229 | ✅ done |
-| 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ⬜ |
+| 3 | Platform — "Technology That Works Behind Every Insurance Journey" | `20875-20074` | `20875-20957` | 958 | ✅ done |
 | 4 | Audiences — "Designed for Organizations Across Africa" | `20875-20195` | `20875-21077` | 656 | ✅ done |
 | 5 | Differentiators — "Why Organizations Choose RedPear" | `20875-20244` | `20875-21126` | 1448 | ✅ done |
 | 6 | Case studies — "Helping Organizations Modernize Insurance" | `20875-20275` | `20875-21156` | 680 | ✅ done |
@@ -272,6 +274,18 @@ drop the prop.
 
 **Per the user, mobile bento cards use 16px padding, not Figma's 24px.** Desktop keeps 24.
 This is a deliberate deviation, not a mistake — see `BentoCard`'s `p-4 lg:p-6`.
+
+**Section 3 is a single wide card**, not a grid: a copy column (`20875-20082` desktop /
+`20875-20964` mobile) beside a "Layered Canvas" (`20875-20093` / `20875-20975`) holding a
+485x460 WhatsApp mock plus two floating cards. Both floating cards are `hidden` in the
+mobile frame and are `hidden lg:flex` here. Copy column type is 24/32 + 18/28 on desktop,
+20/28 + 16/24 on mobile; the feature list is 16/24 medium at both.
+
+> **Figma content bug — not reproduced.** The mobile frame's own copy nodes
+> (`20875-20960` / `20875-20961`) still contain **section 2's** text, "Solutions Built for
+> Modern Insurance Organizations". Reproducing that would print the same heading twice on
+> mobile, so the desktop copy (`20875-20078` / `20875-20079`) is used at both breakpoints.
+> Fix the mobile frame in Figma; no code change needed when you do.
 
 **Section 4 card node IDs.** Six cards, 3x2 on desktop (384/384/400 wide by 200 tall,
 24px gaps — built as equal 389px columns), stacked on mobile. Card type differs by
@@ -478,6 +492,10 @@ at 1440px and 402px and diff against the Figma frames.
       See [`NewsletterForm.tsx`](components/layout/NewsletterForm.tsx).
 - [ ] **Sections 6 and 7 content is hardcoded.** Fine for now, but if it should be
       CMS-driven that shapes how section 7 gets built.
+- [ ] **Section 3's mobile copy nodes hold section 2's text in Figma**
+      (`20875-20960` / `20875-20961` say "Solutions Built for Modern Insurance
+      Organizations"). The build uses the correct desktop copy at both breakpoints. Fix
+      the Figma frame; the code already does the right thing.
 - [ ] **Section 7's mobile copy is on the desktop scale** — 36/44 heading and 18/28 sub at
       both breakpoints (`20875-21194` / `20875-21195`). This is the same thing that was
       flagged and then corrected in Figma for section 6. Built as designed; likely wants
@@ -532,6 +550,22 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-30 — Section 3 (Platform) built — landing page structurally complete
+The last gap. A single wide card: copy column beside a Layered Canvas holding a full
+WhatsApp mock ([`PlatformChat`](components/platform/PlatformChat.tsx)) and two floating
+cards, both hidden on mobile as the design has them.
+
+**Desktop is pixel-exact** — section 1440x958, card 1216x648, chat 485x460, all matching
+Figma exactly.
+
+Mobile runs 1068 against Figma's 1091. Figma's mobile Layered Canvas is a fixed 528 tall
+holding a 460 chat box, leaving 68px of empty space that the hidden floating cards would
+have occupied. Left content-sized rather than reserving dead space, same call as the
+section 2 mobile cards.
+
+Found and did not reproduce a Figma content bug: the mobile frame's copy nodes still hold
+section 2's heading. See the note under Landing page sections.
 
 ### 2026-07-30 — Section 9 (Footer) built — landing page complete apart from section 3
 Logo, tagline, newsletter form, two link columns, copyright and three social icons, via
