@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand — from Figma "RedPear Website" collection */
+  --color-brand-red: #f40b0d;
+  --color-brand-black: #050000;
+  --color-brand-white: #fffdfd;
+
+  /* Neutrals */
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-500: #6b7280;
+
+  /* Product surfaces used inside the hero cards */
+  --color-ink: #0f172a;
+  --color-ink-muted: #475569;
+  --color-ink-faint: #94a3b8;
+  --color-surface: #f1f5f9;
+  --color-surface-hairline: #fafbfd;
+  --color-positive: #10b981;
+  --color-chat-canvas: #f4f3ee;
+  --color-chat-outbound: #e7f8e8;
+
+  /* Type families are injected by next/font in layout.tsx */
+  --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale — Figma text styles.
+     Figma letterSpacing of -2 is a percentage, so px values are size * -0.02. */
+  --text-display-lg: 52px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -1.04px;
+
+  --text-h1-mobile: 36px;
+  --text-h1-mobile--line-height: 44px;
+  --text-h1-mobile--letter-spacing: -0.72px;
+
+  --text-h3: 32px;
+  --text-h3--line-height: 40px;
+  --text-h3--letter-spacing: -0.64px;
+
+  --text-h3-mobile: 28px;
+  --text-h3-mobile--line-height: 36px;
+  --text-h3-mobile--letter-spacing: -0.56px;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+}
+
+/* The "Gloss" effect from Figma: a drop shadow plus three inset shadows that
+   give buttons and cards their raised, lit-from-above look. The inset highlight
+   colour changes per surface, so each variant is spelled out separately. */
+@utility gloss-red {
+  filter: drop-shadow(0 4px 7.5px rgb(0 0 0 / 0.25));
+  box-shadow:
+    inset 0 2px 2px 0 #f40b0d,
+    inset 0 -4px 4px 0 rgb(0 0 0 / 0.2),
+    inset 0 4px 4px 0 rgb(255 255 255 / 0.25);
+}
+
+@utility gloss-white {
+  filter: drop-shadow(0 4px 5px rgb(0 0 0 / 0.15));
+  box-shadow:
+    inset 0 2px 2px 0 #fffdfd,
+    inset 0 -2px 2px 0 rgb(0 0 0 / 0.2),
+    inset 0 4px 4px 0 rgb(255 255 255 / 0.25);
+}
+
+@utility gloss-avatar {
+  box-shadow:
+    0 4px 10px 0 rgb(0 0 0 / 0.15),
+    inset 0 2px 2px 0 #f30b0d,
+    inset 0 -2px 2px 0 rgb(0 0 0 / 0.2),
+    inset 0 4px 4px 0 rgb(255 255 255 / 0.25);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-brand-white);
+  color: var(--color-brand-black);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
