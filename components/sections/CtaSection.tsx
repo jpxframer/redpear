@@ -1,6 +1,17 @@
 import { Button } from "@/components/ui/Button";
 
-export function CtaSection() {
+/**
+ * The red CTA band. Shared by the landing page and /about, which draw the
+ * identical card — same geometry, watermark, gloss and type — and differ only
+ * in wording. Props default to the landing copy.
+ */
+export function CtaSection({
+  title = "Ready to Modernize Your Insurance Operations?",
+  body = "Let's build faster, smarter, and more connected insurance experiences together. Book a dedicated technical briefing with our team.",
+}: {
+  title?: string;
+  body?: string;
+}) {
   return (
     <section
       id="demo"
@@ -29,12 +40,9 @@ export function CtaSection() {
         <div className="relative flex w-full flex-col items-center gap-6">
           <div className="flex w-full flex-col items-center gap-6 text-center">
             <h2 className="font-display text-h3 font-bold text-white lg:text-display-lg lg:font-semibold">
-              Ready to Modernize Your Insurance Operations?
+              {title}
             </h2>
-            <p className="text-body-lg text-neutral-100 lg:w-[640px]">
-              Let&apos;s build faster, smarter, and more connected insurance experiences
-              together. Book a dedicated technical briefing with our team.
-            </p>
+            <p className="text-body-lg text-neutral-100 lg:w-[640px]">{body}</p>
           </div>
           <Button href="#demo" variant="secondary" className="w-full lg:w-auto">
             Book A Demo

@@ -72,6 +72,12 @@
   --text-display-lg--line-height: 56px;
   --text-display-lg--letter-spacing: -1.04px;
 
+  /* Display/Semibold/Small — the mobile step numbers in the About page's
+     "Our Approach" section, which steps 52/56 down to 44/48. */
+  --text-display-sm: 44px;
+  --text-display-sm--line-height: 48px;
+  --text-display-sm--letter-spacing: -0.88px;
+
   --text-h1-mobile: 36px;
   --text-h1-mobile--line-height: 44px;
   --text-h1-mobile--letter-spacing: -0.72px;

@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-31 (About page started — hero built, `/about` route live)
+**Last updated:** 2026-07-31 (About page structurally complete — all nine blocks built)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Live:** https://redpear.vercel.app — **publicly reachable**, deployed from `main` via the
 Vercel dashboard's GitHub integration, so every push to `main` redeploys. There is no
@@ -43,16 +43,18 @@ Screen 3/4 of the eight core screens. Nine blocks; one is built.
 | Block | Status |
 |---|---|
 | Hero — "Building the Future of Insurance Through Technology" | ✅ |
-| 1 — Our Story / Mission / Vision | ⬜ |
-| 2 — What We Believe | ⬜ |
-| 3 — Our Team & Leadership | ⬜ |
-| 4 — Our Approach | ⬜ |
-| 5 — Why Organizations Choose RedPear | ⬜ |
-| 6 — Partners & Clients | ⬜ |
-| 7 — CTA band | ⬜ |
+| 1 — Our Story / Mission / Vision | ✅ |
+| 2 — What We Believe | ✅ |
+| 3 — Our Team & Leadership | ✅ |
+| 4 — Our Approach | ✅ |
+| 5 — Why Organizations Choose RedPear | ✅ (reuses the landing `WhySection`) |
+| 6 — Partners & Clients | ✅ |
+| 7 — CTA band | ✅ (reuses the landing `CtaSection`) |
 | 8 — Footer | ✅ (reuses the shared `Footer`) |
 
-**Next up:** the rest of the About page, then screens 5–8.
+**The About page is structurally complete.** All nine blocks are built and responsive.
+
+**Next up:** screens 5–8 of the eight core screens, none of which have been inspected.
 
 **Blocking launch, not just polish:** the footer newsletter form has no destination, the
 CTA buttons have no booking flow, and most nav/footer links are placeholder anchors. All
@@ -105,13 +107,18 @@ app/
   page.tsx             landing page composition (section order lives here)
   about/page.tsx       /about composition + its own metadata
 components/
-  about/               About page sections, in page order: AboutHero
+  about/               About page sections, in page order: AboutHero,
+                         StorySection, BeliefsSection, TeamSection,
+                         ApproachSection, PartnersSection
   ui/Button.tsx        shared CTA (primary = red, secondary = white)
   ui/IconBadge.tsx     red gloss square + 24px icon slot (see the partial-frame gotcha)
   layout/Navbar.tsx    responsive nav + mobile overlay, client component
   sections/            one file per landing section, in page order:
                          Hero, ProblemSection, SolutionsSection,
                          AudiencesSection, WhySection, TestimonialsSection
+                       WhySection and CtaSection are SHARED — /about renders both,
+                         so editing either changes two pages. CtaSection takes
+                         optional title/body props (defaults = landing copy).
   hero/                AnalyticsCard, ChatCard, ClaimsCard, InsurerLogos
   problem/             ProblemCard + DiagramShell/Badge/MicroTag/Callout,
                          and 4 diagrams (ClaimsPipeline, SystemTopology,
@@ -164,6 +171,7 @@ converted to px in the tokens:
 | Token | Size/line | Figma style |
 |---|---|---|
 | `text-display-lg` | 52/56 | Display/Semibold/Large |
+| `text-display-sm` | 44/48 | Display/Semibold/Small |
 | `text-h1-mobile` | 36/44 | Heading/H1/Semibold/Mobile |
 | `text-h2` | 36/44 | Heading/H2/Medium/Desktop |
 | `text-h3` | 32/40 | Heading/H3/Medium/Desktop |
@@ -396,9 +404,10 @@ way to tell them apart.
 | 8 | Footer | `20875-19043` | `20875-19398` | 378 |
 
 The **footer is identical to the landing page's**, so it reuses the shared `Footer`
-component. **Section 5 is the landing page's section 5 with different body copy** — same
-four cards, same 2x2 layout, but 544-wide images against the landing's 592 and reworded
-descriptions. Plan to generalise `WhyCard` rather than fork it.
+component. **Section 5 is the landing page's section 5 verbatim** — confirmed 2026-07-31 by
+diffing the copy and the geometry: same heading, same sub, same four card titles and
+bodies, same 800px copy column, same 592/544 card and image widths. `WhySection` is
+imported into `/about` unchanged; no generalisation of `WhyCard` was needed.
 
 The navbar in the About frames (`20875-18779` desktop, `20875-19156` mobile) is the shared
 one. The mobile Nav frame is 133 tall because it includes a 53px iOS **StatusBar mock**
@@ -419,6 +428,173 @@ five, stacked full width.
 | RedPear Team Collaboration | col 3 bottom, 236 tall | ✅ shown | about/team-collaboration.png |
 
 All five export at 1024x1024 into non-square slots, so they are `object-cover`.
+
+**Section 1 node IDs** (Our Story / Mission / Vision). Wrapper `20875-18807` desktop /
+`20875-19164` mobile; the card itself is `20875-18808` / `20875-19165`.
+
+Three nested levels of the **same** raised card, all `gloss-white` on `brand-white`:
+
+| Level | Desktop | Mobile |
+|---|---|---|
+| Outer shell | 1216x746, p-24, **r-24** | 370x1170, p-16, **r-16** |
+| Our Story card | 1168x498, p-24, r-16 | 338x690, p-16, r-16 |
+| Mission / Vision cards | 572x176 side by side, p-16, r-16 | 338x208 stacked, p-16, r-16 |
+
+The outer shell is the **only** thing whose radius changes across breakpoints. Story image
+is 488x450 on desktop and a 306x306 square on mobile — Figma exports the **same
+1024x1024 file** for both (identical MD5), so it is one asset at `about/our-story.png`
+with `object-cover`.
+
+Headings here are `brand-red` **Geist Medium**, not black: 36/44 desktop (`text-h2`),
+32/40 mobile (`text-h3`). Body is 18/28 → 16/24. Image-to-copy gap is 32 at both
+breakpoints; every other gap steps 24 → 16.
+
+**Section 2 node IDs** (What We Believe). Wrapper `20875-18826` desktop / `20875-19183`
+mobile; heading `20875-18828` / `20875-19185`.
+
+| Card | Desktop | Mobile | Icon |
+|---|---|---|---|
+| Insurance First | `20875-18830` | `20875-19187` | building-4 |
+| Customer First | `20875-18837` | `20875-19194` | profile |
+| Trust & Security | `20875-18844` | `20875-19201` | shield-security |
+| Partnership | `20875-18851` | `20875-19208` | profile-2user |
+
+All four icons are **full 24x24 viewBoxes**, so `IconBadge`'s default slot is correct — no
+`sizeClass` needed. The badge itself (40x40, r-8, `brand-red`, gloss-red insets, 8px pad)
+is exactly what `IconBadge` already renders.
+
+Desktop is a 2x2 grid of 596x188 cards, 24px gaps, capped at `max-w-content`. Partnership's
+body is one line where the other three are two, and Figma still draws all four at 188 — so
+the grid uses `lg:auto-rows-fr`, same trick as the landing page's section 4.
+
+Type steps down on mobile like every other section — 36/44 → **28/36** heading
+(`text-h3-mobile`), 28/36 → **24/32** card titles (`text-h4-mobile`), 18/28 → **16/24**
+body. The frame originally carried the desktop scale at both breakpoints; the user
+corrected it in Figma on 2026-07-31 after it was flagged, and the code was re-pulled.
+
+The card is **identical at both breakpoints**: `gloss-white bg-brand-white rounded-2xl p-4`,
+no stroke. The mobile frame originally drew a flat bordered card with no gloss; the user
+corrected it in Figma on 2026-07-31 after it was flagged.
+
+**Pixel-exact at both breakpoints, no residual** — mobile 884 and cards 176/200/176/176
+match Figma exactly, because dropping the border also dropped the 2px-per-card box-model
+difference that a CSS stroke costs. Mobile cards are content-sized (not levelled like the
+desktop grid), which is what Figma draws.
+
+One sub-perceptual deviation: Figma fills the **mobile** card with Generic/White `#FFFFFF`
+where desktop uses RedPear Website/White `#FFFDFD`. Both breakpoints use `bg-brand-white`
+here — the difference is 2/255 on two channels and invisible, and using Tailwind's raw
+`bg-white` on mobile only would have been the sole place on the page where a card skips the
+brand token. Card width is likewise normalised to 370 (the standard `px-4` gutter) against
+Figma's 367, because this frame's own wrapper is drawn 399 wide at x=2 rather than 402 at
+x=0.
+
+**Section 3 node IDs** (Our Team & Leadership). Wrapper `20875-18859` desktop /
+`20875-19215` mobile; copy `20875-18861` / `20875-19217`; grid shell `20875-18864` /
+`20875-19220`.
+
+| Person | Desktop card | Mobile card | Avatar node | File |
+|---|---|---|---|---|
+| Alfred Ludwig Kissiedu | `20875-18866` | `20875-19222` | `20875-18869` | team/alfred-kissiedu.png |
+| Lois Adusei | `20875-18879` | `20875-19235` | `20875-18882` | team/lois-adusei.png |
+| Nimondo Zangui | `20875-18892` | `20875-19248` | `20875-18895` | team/nimondo-zangui.png |
+| Robert Dieu Donne Tawiah | `20875-18905` | `20875-19261` | `20875-18908` | team/robert-tawiah.jpg |
+| Rashad Muntar | `20875-18918` | `20875-19274` | `20875-18921` | team/rashad-muntar.jpg |
+| Osmond Aboagye | `20875-18931` | `20875-19287` | `20875-18934` | team/osmond-aboagye.jpg |
+
+**Pull avatars from the avatar node, not the card or the grid.** `download_assets` on the
+grid returned 11 raw images for 6 avatars, and on a single card returned 2, with no way to
+tell which was the portrait. Called on the `Rectangle 1` node itself, `rawImages[0]` is
+unambiguous.
+
+The card **re-lays out** rather than just resizing: desktop is avatar-left (fixed 188x188)
+with name/role/LinkedIn in a `flex-1` column beside it, vertically centred; mobile stacks a
+full-width square avatar above that same column. The Bio block sits below at full width in
+both. Name steps 28/36 → 24/32 and the bio 18/28 → 16/24, but **role and the "Bio" label
+stay 18/28 at both breakpoints** — the label is Paragraph/Large/**Medium**, i.e.
+`text-body-lg font-medium`.
+
+The LinkedIn badge is the icon badge geometry but **white**, so `IconBadge` grew a `variant`
+prop (`"red" | "white"`, default red) rather than gaining a parallel component.
+
+Use plain grid auto rows here, **not `auto-rows-fr`**. Figma levels each row against its own
+tallest card (440 / 412 / 440), which is exactly what default grid stretching already does;
+`auto-rows-fr` would level all three rows to the global tallest and add 56px the design does
+not have.
+
+> **Figma layout bug — normalised, not reproduced.** Each desktop card is 572 wide with
+> 16px padding, so its content box is **540**. Figma draws the card's inner frame at
+> **560** starting at x=16, putting its right edge at 576 — 4px past the card's own edge.
+> 16 + 560 + 16 = 592, the landing page's card width, so the inner frame is stale from a
+> 592-wide card that was never reflowed when the outer dropped to 572. Built at the correct
+> 540. Consequences: two bios gain a line and "Robert Dieu Donne Tawiah" wraps onto two
+> lines, so the section measures 1711 against Figma's 1682 and row 2 is 441 against 412.
+> **Mobile has no such problem** — 338 − 32 = 306, exactly what Figma draws.
+
+**Section 4 node IDs** (Our Approach). Wrapper `20875-18945` desktop / `20875-19301`
+mobile. Four numbered step cards, 2x2 on desktop and stacked on mobile, no outer shell.
+
+| Step | Desktop | Mobile |
+|---|---|---|
+| 01 Discover | `20875-18949` | `20875-19305` |
+| 02 Design | `20875-18955` | `20875-19311` |
+| 03 Build | `20875-18961` | `20875-19317` |
+| 04 Optimize | `20875-18967` | `20875-19323` |
+
+This is the only section whose **step number** carries a display size: 52/56 desktop
+(`text-display-lg`) stepping to 44/48 mobile, which is where `text-display-sm` came from.
+Titles are 24/32 → 20/28 (`text-h5` → `text-h6`), bodies 18/28 → 16/24, all in `brand-red`
+Geist SemiBold for the number and `brand-black` Geist Medium for the title.
+
+The grid uses **`lg:items-start`**, not the default stretch: Figma sizes these rows to
+`fit-content` and pins each card to the row top. All four cards are 200 tall today so it
+makes no visible difference — it only matters if one card's copy gets shorter.
+
+**Pixel-exact at both breakpoints with no residual** — 618 / 980 sections, 596x200 /
+370x204 cards, 24 / 16 gaps.
+
+**Section 6 node IDs** (Partners & Clients). Wrapper `20875-19005` desktop / `20875-19360`
+mobile; logo grid `20875-19008` / `20875-19363`.
+
+A plain grid of fixed **89x48** cells with 24px gaps — 5x2 on desktop, 2x5 on mobile. The
+cells sit at the *start* of each track rather than stretching, so the desktop row occupies
+1081 of the 1216 column and leaves 135 trailing. That is how Figma draws it; do not
+`justify-between` it.
+
+**Ten slots, seven files.** Hollard, GLICO and BAS Capital each appear twice, in exactly the
+same order the hero marquee uses. Reuses `public/insurers/` unchanged — the section 6
+exports are **byte-identical** to the hero's (md5-verified), so no new assets.
+
+`object-contain object-bottom`, not Figma's generated `size-full` with no object-fit: the
+marks run 1.9:1 to 4.6:1 against a 1.85:1 box, so filling would squash the wide ones. Same
+reasoning as [`InsurerLogos`](components/hero/InsurerLogos.tsx).
+
+Desktop is **pixel-exact** — cells land at 0/248/496/744/992 within the grid, matching Figma
+exactly; mobile at 0/197 likewise, grid 370x336. Mobile section runs 452 against 465 because
+Figma fixes its inner frame at 417 where the content is 404; the 13px is slack in the frame,
+not layout.
+
+**Section 7 node IDs** (CTA band). Wrapper `20875-19019` desktop / **`20875-19374`** mobile.
+
+> The user supplied `20875-19146` for the mobile CTA, which is the **entire About Mobile
+> frame**. Same class of mix-up as the landing footer. Always check a pasted node against
+> the tables here.
+
+**Identical to the landing CTA in every respect except wording** — same 24px card, 64px
+padding, `gloss-cta`, watermark at the same offsets and 10% opacity, 52/56 semibold heading
+stepping to 32/40 **bold**, 640px sub, white button. So `CtaSection` gained optional
+`title` / `body` props defaulting to the landing copy, and `/about` passes its own:
+
+| | Landing | About |
+|---|---|---|
+| Heading | Ready to **Modernize** Your Insurance Operations? | Ready to **Transform** Your Insurance Operations? |
+| Body | Let's build faster, smarter… technical briefing with our team. | Whether you're modernizing existing systems… take the next step. |
+
+Both instances carry `id="demo"`. Legal — separate documents — but it means `#demo` on
+`/about` now resolves to the About band rather than the landing one.
+
+490 / 502 against Figma's 488 / 500, the same +2 border residual the landing band already
+carried.
 
 > **Figma layout bug — normalised, not reproduced.** The collage's left column is 394 wide
 > against 384 for the other two. With 32px gaps that totals 1226 inside a 1216 container,
@@ -594,6 +770,27 @@ at 1440px and 402px and diff against the Figma frames.
 
 **Awaiting a decision from the user**
 
+- [x] ~~About section 2: mobile cards are flat and bordered, desktop cards are glossy.~~
+      Fixed 2026-07-31: the user added Gloss and removed the stroke in Figma, and the code
+      was re-pulled. The card is now one class list at both breakpoints.
+- [x] ~~About section 2 keeps the desktop type scale on mobile.~~ Fixed 2026-07-31: the
+      user corrected the Figma frame (28/36 heading, 24/32 titles, 16/24 body) and the code
+      was re-pulled to match. **Figma and code agree; no divergence here.**
+- [ ] **About sections 4 and 6 keep the 36/44 heading on mobile.** "Our Approach" and
+      "Partners & Clients" both stay at the desktop scale where every other section on the
+      page steps down to 28/36 — including section 2 after it was corrected. Both are short
+      enough not to overflow, so this is a consistency call rather than a bug. Built as
+      designed; one line each if you want them stepped down.
+- [ ] **About section 3: the desktop card's inner frame is 20px too wide in Figma** (560
+      inside a 572 card with 16px padding, which only fits a 592 card). The code uses the
+      correct 540, which makes the section 29px taller than the frame and wraps Robert's
+      name. Reflow that frame in Figma; no code change needed when you do.
+- [ ] **About section 3: the LinkedIn badges are not links.** Figma carries no profile
+      URLs, so they render as presentational badges. They need real hrefs — and to become
+      anchors with accessible names — before launch.
+- [ ] **About section 2: "Trust & Security" has no closing full stop** where the other
+      three cards do. Reproduced verbatim from Figma.
+
 - [ ] **Footer newsletter form is built but NOT WIRED.** Its `onSubmit` only calls
       `preventDefault`, so a visitor can type an email, click Subscribe, and nothing
       happens. The markup is correct and accessible (`type="email"`, `required`, label
@@ -612,9 +809,10 @@ at 1440px and 402px and diff against the Figma frames.
       other section. Update the Figma frame to match; no code change needed when you do.
 - [ ] **Section 7 blog cards are not links.** Figma has no URLs on them, so they are plain
       `article` elements. They need hrefs once the blog exists.
-- [ ] **The section 8 CTA button links to `#demo`, which is the section it sits in** — so
-      clicking it does nothing. Every other "Book a Demo" on the page now correctly scrolls
-      here, but this one needs a real destination (Calendly, a contact form, a route).
+- [ ] **The CTA band's own button links to `#demo`, the section it sits in** — so clicking
+      it does nothing. Now true on **both** pages, since `/about` renders the same shared
+      `CtaSection`. Every other "Book a Demo" correctly scrolls to the band; this one needs
+      a real destination (Calendly, a contact form, a route).
 - [ ] **Section 6: Amara Okafor's card is drawn at a 20px radius**; the other three are
       24px. Reproduced as designed, isolated behind `TestimonialCard`'s `radiusClass`.
 - [ ] **Section 6: quote punctuation is mixed** — straight quotes on cards 1 and 2, curly
@@ -624,6 +822,18 @@ at 1440px and 402px and diff against the Figma frames.
 
 **Engineering debt**
 
+- [ ] **The insurer logos are under-resolved for the About page.** Sources cap at 128px
+      (Figma's ceiling — see the note in Conventions). That is 2.17x in the hero's 59px box
+      but only **1.44x** in section 6's 89px box, so they render visibly softer there on a
+      retina display. Needs vector or higher-res originals from the insurers, not a
+      re-export.
+- [ ] `public/team/` holds six portraits at 482x482 to 800x800 (~1.9 MB total) for slots
+      that render at 188 desktop / 306 mobile. Only `rashad-muntar.jpg` (482) is tight for
+      a 306px slot at 2x; the rest have headroom.
+- [ ] `public/icons/profile.svg` is **90 KB** where the three icons beside it are 1-9 KB.
+      No embedded raster — Figma flattened a mask into seven paths at absurd coordinate
+      precision. It renders correctly and gzips well, but it is worth re-exporting or
+      running through SVGO.
 - [ ] **About hero images are oversized.** `public/about/` is five 1024x1024 PNGs at
       ~1.2-1.7 MB each (7 MB total) rendering into 384x236 and 384x488 slots. Next.js
       optimises delivery, so this is repo weight rather than user-facing, but it is now the
@@ -665,6 +875,175 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-31 — About section 7 (CTA band) reuses the landing `CtaSection`
+The About CTA is the landing card with different wording — same geometry, watermark, gloss
+and type at both breakpoints. Rather than fork it, `CtaSection` gained optional `title` /
+`body` props defaulting to the landing copy, so the landing call site is unchanged.
+
+**Regression-checked, because this edits a component the landing page renders**: measured
+both pages at both breakpoints. Landing copy is byte-identical to before, and card, radius,
+padding, heading weights, sub width, button and watermark all match across the two. About
+runs 490 / 502 against Figma's 488 / 500 — the same +2 the landing band already carried.
+
+Note both instances carry `id="demo"`, which is legal across separate documents but means
+`#demo` on `/about` resolves to the About band. The dead self-link on the band's own button
+is now a two-page issue.
+
+The user's mobile node was `20875-19146`, the **whole About Mobile frame** rather than the
+CTA; the real one is `20875-19374`.
+
+### 2026-07-31 — About section 6 (Partners & Clients)
+[`PartnersSection`](components/about/PartnersSection.tsx). A grid of fixed 89x48 logo cells,
+5x2 on desktop and 2x5 on mobile.
+
+**No new assets.** The section 6 exports are byte-identical to the hero's logos (md5-checked
+before downloading anything), so it reuses `public/insurers/` — seven files across ten
+slots, since Hollard, GLICO and BAS Capital each appear twice, in exactly the hero's order.
+
+**Desktop is pixel-exact**: cells land at 0/248/496/744/992 within the 1216 column, matching
+Figma cell for cell. Mobile likewise at 0/197 with a 370x336 grid; the section runs 452
+against 465 only because Figma fixes that inner frame at 417 where its content is 404.
+
+Two things not to "fix" later: the desktop row deliberately does **not** stretch to fill
+1216 — the cells are fixed-width and start-aligned, leaving 135px trailing, which is how
+Figma draws it. And the images are `object-contain object-bottom`, **not** Figma's generated
+`size-full` with no object-fit, which would squash the wide marks.
+
+Sharpness note: the logo sources top out at 128px (Figma's ceiling, already recorded), which
+is 2.17x in the hero's 59px box but only **1.44x** in this section's 89px box — so these
+render softer than the hero on a retina display. Logged as debt.
+
+The mobile heading stays 36/44 like section 4's. Built as designed and flagged.
+
+### 2026-07-31 — About section 5 reuses the landing `WhySection`
+The user's call, and it checked out: the About frame's section 5 is the landing page's
+section 5 **verbatim**, not a reworded variant as this file previously recorded. Diffed
+before reusing — heading, sub, all four card titles and bodies identical; 800px copy
+column, 10px heading gap, 592 cards and 544 images all matching.
+
+So `/about` imports `WhySection` from `components/sections/` unchanged. No new component,
+no new assets, no `WhyCard` generalisation. **It now renders on two pages — editing it
+changes both**, which is why the Layout tree calls it out.
+
+Verified it renders identically on both routes (1455 desktop, 596x586 cards, 544 images,
+nothing broken), which is the real proof there is no page-specific drift. Against the About
+frame the copy block (800x110) and images (544) are exact; the section at 1455 against
+1448 and cards +4 are the same box-model residual the landing section already carried.
+
+Note the About mobile frame is drawn 1950 tall against ~1908 of actual content, so the
+40px gap there is slack in the frame, not a layout error.
+
+### 2026-07-31 — About section 4 (Our Approach)
+[`ApproachSection`](components/about/ApproachSection.tsx). Four numbered step cards, 2x2 on
+desktop and stacked on mobile. **Pixel-exact at both breakpoints with no residual** —
+sections 618 / 980, cards 596x200 / 370x204, gaps 24 / 16, every type size matching.
+
+Added one token, `text-display-sm` (44/48, -0.88 — Figma's Display/Semibold/Small). This is
+the only place on the site where a *step number* takes a display size, and it is the only
+size in this section that did not already exist.
+
+The grid uses `lg:items-start` rather than the default stretch, because Figma sizes these
+rows `fit-content` and pins each card to the row top. Invisible today (all four cards are
+200 tall) but it is a real difference from section 2, which explicitly stretches.
+
+The mobile heading stays 36/44 where every other section on the page steps down to 28/36.
+Built as designed and flagged — the copy is short enough that nothing overflows, so it is a
+consistency call rather than a bug.
+
+### 2026-07-31 — About section 3 (Our Team & Leadership)
+[`TeamSection`](components/about/TeamSection.tsx). Six profile cards, 2x3 on desktop and
+stacked on mobile, inside a `gloss-white` shell. The biggest block on the page.
+
+The card **re-lays out** across breakpoints rather than just resizing — avatar-left on
+desktop, avatar-on-top on mobile — so it is one component with a `lg:flex-row` switch, not
+two. `IconBadge` grew a `variant` prop for the white LinkedIn badge instead of a parallel
+component; the red default is unchanged, so the landing page is untouched.
+
+**Mobile is faithful**: cards 771/795/771... against Figma's 770/794/770, avatar 306
+exactly, the +1 per card being the divider's CSS border. The section runs 5014 against 5032
+only because the intro paragraph wraps to 6 lines where Figma's box allows 7.
+
+**Desktop carries one real deviation, and it is Figma's bug.** Each card is 572 wide with
+16px padding — content 540 — but Figma draws its inner frame at 560 from x=16, i.e. 4px
+past the card's own right edge. 16 + 560 + 16 = 592, the *landing page's* card width, so
+that frame is stale from a 592 card that never reflowed when the outer dropped to 572.
+Built at the correct 540, which costs two bios an extra line and wraps Robert's name onto
+two lines: section 1711 against 1682, row 2 at 441 against 412. Mobile's equivalent maths
+is exact, which confirms the desktop frame is the wrong one.
+
+Also worth remembering: `download_assets` on the grid returned **11 raw images for 6
+avatars** and on a single card returned 2, with nothing to disambiguate them. Calling it on
+each `Rectangle 1` avatar node gives a clean 1:1.
+
+### 2026-07-31 — About section 2 mobile cards given the gloss
+User added the Gloss effect to all four mobile card nodes **and removed the 1px stroke**.
+Re-pulled: the card is now a single class list at both breakpoints
+(`gloss-white bg-brand-white rounded-2xl p-4`), and the breakpoint fork that carried the
+flat bordered variant is gone.
+
+Dropping the border also dropped the box-model residual it caused, so the section is now
+**pixel-exact at both breakpoints with nothing left over** — mobile 884 and cards
+176/200/176/176 match Figma exactly, where they were 892 and 178/202/178/178 a moment ago.
+
+Figma still fills the mobile card with Generic/White `#FFFFFF` against desktop's
+`#FFFDFD`. Both use `bg-brand-white` here: the difference is 2/255 on two channels,
+invisible in render, and honouring it would have made this the one card on the page that
+skips the brand token. Disclosed rather than silently absorbed.
+
+### 2026-07-31 — About section 2 mobile type scale corrected
+User updated the four mobile card nodes and the heading in Figma so the section steps down
+on mobile like every other one: 28/36 heading, 24/32 card titles, 16/24 body. Re-pulled and
+matched — all three map onto existing tokens (`text-h3-mobile`, `text-h4-mobile`,
+`text-body-md`), so nothing was added to `globals.css`. Desktop is untouched.
+
+Mobile now measures 892 against Figma's 884, cards 178/202/178/178 against 176/200/176/176
+— purely the 1px-border residual. **Figma and the code now agree; this is no longer a
+divergence.**
+
+The other flag from this section is still open: mobile cards remain flat-and-bordered while
+desktop cards are glossy.
+
+### 2026-07-31 — About section 2 (What We Believe)
+[`BeliefsSection`](components/about/BeliefsSection.tsx). Four icon-and-copy cards, 2x2 on
+desktop and stacked on mobile. **Desktop is pixel-exact** — section 594, heading 1216x44,
+all four cards 596x188 with 24px gaps. Mobile runs 1008 against 1000, entirely the
+1px-border-vs-Figma-stroke residual at 2px per card.
+
+Reused `IconBadge` unchanged — Figma's badge is exactly what it already renders, and all
+four new icons export as full 24x24 viewBoxes so none needs a `sizeClass`. No new tokens
+and no new CSS.
+
+**The two frames disagree on the card surface and both are reproduced**: desktop is the
+usual `gloss-white` raised card, mobile is flat pure white with a `neutral-200` stroke and
+no gloss. That is the only card on the page that changes treatment across breakpoints, and
+it sits right under the Story section whose mobile cards *are* glossy — so it is flagged as
+a probable oversight rather than quietly unified. Type also does not step down here (36/44
+and 28/36 + 18/28 at both breakpoints), the same thing that was flagged and later fixed in
+Figma for landing sections 6 and 7.
+
+Card width is normalised to the standard 370 gutter; this frame's own wrapper is drawn 399
+wide at x=2 instead of 402 at x=0, which would otherwise make it the only section on the
+page indented by 2px.
+
+### 2026-07-31 — About section 1 (Our Story / Mission / Vision)
+[`StorySection`](components/about/StorySection.tsx). **Pixel-exact at both breakpoints with
+zero deviations** — every measured box matches Figma: section 846 / 1218, shell 1216x746 /
+370x1170, story card 1168x498 / 338x690, image 488x450 / 306x306, pillar cards 572x176 /
+338x208, all radii and padding, headings 36/44 → 32/40, body 18/28 → 16/24.
+
+Nothing new was needed in `globals.css`: the Gloss effect Figma reports on all four cards
+is byte-for-byte the existing `gloss-white` utility. Reused as-is, three levels deep.
+
+Two things to know. The headings are **`brand-red` Geist Medium**, not black like every
+section on the landing page — this is the first section where the heading is the accent
+colour. And the **outer shell is the only element whose radius changes** across
+breakpoints (24 desktop, 16 mobile); the three inner cards stay at 16.
+
+Figma marks the Mission/Vision headings `text-center whitespace-nowrap`, which is inert —
+they sit in a left-aligned column and are shrink-wrapped, so the design file renders them
+left-aligned too. Not reproduced, since copying it would imply a centring that does not
+exist.
 
 ### 2026-07-31 — About page started: `/about` route + hero
 First page beyond the landing page. Added [`app/about/page.tsx`](app/about/page.tsx) and

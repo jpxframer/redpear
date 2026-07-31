@@ -15,14 +15,22 @@ export function IconBadge({
   sizeClass = "size-6",
   width = 24,
   height = 24,
+  variant = "red",
 }: {
   src: string;
   sizeClass?: string;
   width?: number;
   height?: number;
+  /** Red is the section-heading badge; white is the LinkedIn badge on team cards. */
+  variant?: "red" | "white";
 }) {
+  const surface =
+    variant === "red" ? "gloss-red bg-brand-red" : "gloss-white bg-brand-white";
+
   return (
-    <div className="gloss-red flex w-fit items-center justify-center rounded-lg bg-brand-red p-2">
+    <div
+      className={`${surface} flex w-fit items-center justify-center rounded-lg p-2`}
+    >
       <span className="flex size-6 items-center justify-center">
         <Image src={src} alt="" width={width} height={height} className={sizeClass} />
       </span>
