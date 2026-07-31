@@ -6,12 +6,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
-// About is its own route; the rest are still landing-page sections. Their hrefs
-// are root-relative rather than bare fragments so they resolve from /about too —
-// a bare "#blog" would look for that section on whatever page you are already on.
+// About and Services are their own routes; the rest are still landing-page
+// sections. Those hrefs are root-relative rather than bare fragments so they
+// resolve from any page — a bare "#blog" would look for that section on
+// whatever page you are already on.
 const navLinks = [
   { label: "About", href: "/about" },
-  { label: "Services", href: "/#services" },
+  { label: "Services", href: "/services" },
   { label: "Blog", href: "/#blog" },
   { label: "Contact", href: "/#contact" },
 ];

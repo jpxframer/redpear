@@ -1,4 +1,12 @@
-const steps = [
+export type ApproachStep = {
+  number: string;
+  title: string;
+  body: string;
+};
+
+// The About page's wording. /services renders the same section as "How We Work"
+// with its own steps — two of the four are reworded there.
+const aboutSteps: ApproachStep[] = [
   {
     number: "01",
     title: "Discover",
@@ -21,14 +29,18 @@ const steps = [
   },
 ];
 
-export function ApproachSection() {
+export function ApproachSection({
+  title = "Our Approach",
+  steps = aboutSteps,
+}: {
+  title?: string;
+  steps?: ApproachStep[];
+}) {
   return (
     <section className="px-4 py-6 lg:px-28 lg:py-[50px]">
       <div className="mx-auto flex max-w-content flex-col gap-6 lg:gap-[50px]">
-        {/* Figma keeps this heading at 36/44 on mobile rather than stepping it
-            down like every other section on the page — see Known follow-ups. */}
-        <h2 className="text-center font-display text-h2 font-medium text-brand-black">
-          Our Approach
+        <h2 className="text-center font-display text-h3-mobile font-medium text-brand-black lg:text-h2">
+          {title}
         </h2>
 
         {/* lg:items-start, not the default stretch: Figma sizes these rows to

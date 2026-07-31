@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-31 (About page structurally complete — all nine blocks built)
+**Last updated:** 2026-07-31 (About and Services pages both structurally complete)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Live:** https://redpear.vercel.app — **publicly reachable**, deployed from `main` via the
 Vercel dashboard's GitHub integration, so every push to `main` redeploys. There is no
@@ -54,7 +54,24 @@ Screen 3/4 of the eight core screens. Nine blocks; one is built.
 
 **The About page is structurally complete.** All nine blocks are built and responsive.
 
-**Next up:** screens 5–8 of the eight core screens, none of which have been inspected.
+### Services page (`/services`) — in progress
+
+Screens 5/6. Six blocks; the hero is built and four of the rest are already-built
+components that just need wiring with new copy.
+
+| Block | Status |
+|---|---|
+| Hero — "Technology Solutions Built for the Future of Insurance" + 6 bento cards | ✅ |
+| 1 — How We Work | ✅ (reuses `ApproachSection`) |
+| 2 — Why Organizations Choose RedPear | ✅ (reuses `WhySection`) |
+| 3 — Frequently Asked Questions | ✅ |
+| 4 — CTA band | ✅ (reuses `CtaSection`) |
+| 5 — Footer | ✅ (reuses the shared `Footer`) |
+
+**The Services page is structurally complete.** Only two of its six blocks needed new
+components; the other four are reuses.
+
+**Next up:** screens 7–8, which have not been inspected.
 
 **Blocking launch, not just polish:** the footer newsletter form has no destination, the
 CTA buttons have no booking flow, and most nav/footer links are placeholder anchors. All
@@ -106,10 +123,14 @@ app/
   layout.tsx           font wiring, metadata
   page.tsx             landing page composition (section order lives here)
   about/page.tsx       /about composition + its own metadata
+  services/page.tsx    /services composition + its own metadata
 components/
+  services/            Services page sections: ServicesHero, FaqSection
   about/               About page sections, in page order: AboutHero,
                          StorySection, BeliefsSection, TeamSection,
                          ApproachSection, PartnersSection
+                       ApproachSection is SHARED — /services renders it as
+                         "How We Work" via title/steps props.
   ui/Button.tsx        shared CTA (primary = red, secondary = white)
   ui/IconBadge.tsx     red gloss square + 24px icon slot (see the partial-frame gotcha)
   layout/Navbar.tsx    responsive nav + mobile overlay, client component
@@ -221,8 +242,8 @@ accept, a pasted `figd_` token — it is a credential leak with no upside.
 | 2 | `20875-20474` | Landing — Mobile | 🟡 in progress |
 | 3 | `20875-18777` | About — Desktop (1440x7356) | 🟡 in progress |
 | 4 | `20875-19146` | About — Mobile (402x12801) | 🟡 in progress |
-| 5 | `20875-21362` | not yet inspected | ⬜ not started |
-| 6 | `20875-21622` | not yet inspected | ⬜ not started |
+| 5 | `20875-21362` | Services — Desktop (1440x5769) | 🟡 in progress |
+| 6 | `20875-21622` | Services — Mobile (402x8076) | 🟡 in progress |
 | 7 | `20875-21873` | not yet inspected | ⬜ not started |
 | 8 | `20875-22083` | not yet inspected | ⬜ not started |
 
@@ -601,14 +622,133 @@ carried.
 > i.e. it overflows its own frame by 10px. Built as three equal 384px columns, which is
 > what the other two already are. Columns 2 and 3 therefore sit 10px left of Figma.
 
+### Services page sections
+
+Desktop `20875-21362` (1440x5769) and mobile `20875-21622` (402x8076). Enumerated on
+2026-07-31. **Four of the six blocks are components that already exist**, which is the
+point of this page — see the status table above.
+
+| # | Block | Desktop node | Mobile node | Desktop height |
+|---|---|---|---|---|
+| — | Hero + 6 bento cards | `20875-21363` | `20875-21623` | 2354 |
+| 1 | How We Work | `20875-21414` | `20875-21666` | 618 |
+| 2 | Why Organizations Choose RedPear | `20875-21443` | `20875-21695` | 1448 |
+| 3 | Frequently Asked Questions | `20875-21474` | `20875-21725` | 483 |
+| 4 | CTA band | `20875-21495` | `20875-21746` | 488 |
+| 5 | Footer | `20875-21519` | `20875-21770` | 378 |
+
+The mobile frame's How We Work (`20875-21666`, 980 tall) and Why (`20875-21695`, 1950) are
+**identical to the About page's** equivalents, so those reuse straight across. The mobile
+FAQ is `20875-21725`; its first item is expanded like the desktop one.
+
+**Hero node IDs.** Copy `20875-21380`; card grid `20875-21383`. Six bento cards, 2x3 with
+24px gaps, inside the Figma "Hero" frame — so `ServicesHero` holds both the copy and the
+grid, as the design groups them.
+
+| Card | Node | Image |
+|---|---|---|
+| AI Solutions (featured) | `20875-21384` | solutions/ai-solutions.png *(reused)* |
+| Insurance Platforms | `20875-21389` | solutions/insurance-platforms.png *(reused)* |
+| WhatsApp Solutions | `20875-21394` | solutions/whatsapp-solutions.png |
+| Digital Transformation | `20875-21399` | solutions/digital-transformation.png |
+| Analytics & Insights | `20875-21404` | solutions/analytics-insights.png |
+| Consulting & Integration | `20875-21409` | solutions/consulting-integration.png |
+
+**All six are bento cards here**, unlike the landing page where only the first two are bento
+and the other four are small cards with DOM micro-visuals. Cards 1 and 2 carry the landing's
+copy **verbatim** and reuse its images; 3-6 needed new exports. `BentoCard` fits unchanged —
+its `p-4 lg:p-6`, 16px gap, `h-[255px] lg:h-[430px]` image and 24px radius match this frame
+exactly.
+
+`mobileBodyLarge` is deliberately **not** set on Insurance Platforms here. That prop exists
+for a landing-page-only Figma quirk that was flagged as a likely oversight; there is no
+evidence for it on this frame.
+
+**The two frames disagree on mobile bento metrics**, which is why `BentoCard` has a
+`mobileVariant` prop. Desktop is identical either way; the default is `"landing"` so the
+live landing page is untouched, and Services opts in with `mobileVariant="services"`.
+
+| Mobile | `"landing"` | `"services"` |
+|---|---|---|
+| Card padding | 16 all round | **24 horizontal / 16 vertical** |
+| Title → body gap | 16 | **8** |
+| Featured title weight | semibold | **medium** (no featured distinction on mobile) |
+| Gap between cards | 24 | **16** |
+
+The landing's flat 16px pad is the deliberate deviation the user asked for over Figma's 24
+— that is why it stays the default rather than being "corrected".
+
+> **Watch the padding shorthand.** The services variant is spelled `px-6 py-4 lg:py-6`, not
+> `px-6 py-4 lg:p-6`. Tailwind emits `padding-inline` / `padding-block` *after* the `padding`
+> shorthand, so an unprefixed `py-4` beats `lg:p-6` at every width and desktop silently
+> loses its 24px vertical padding.
+
+Desktop measures 2280 against Figma's 2274 and mobile 3046 against 3034 — +2 per card in
+both cases, from the CSS border that Figma's card does not draw at all (it relies on the
+gloss shadow alone). The border is kept so these cards stay visually identical to the
+landing's; dropping it for the services variant would make the section pixel-exact.
+
+Mobile hero copy is 36/44 over 16/24 with a 16px gap, and 24px from copy to grid — verified
+against `20875-21626`.
+
+**How We Work** (`20875-21414` / `20875-21666`) is the About page's Approach section with a
+different heading and two reworded steps, so `ApproachSection` took `title` and `steps`
+props defaulting to the About wording. Step 2's body gains "…not a generic template" and
+step 4 becomes **"Launch & Support"** rather than "Optimize". **Exact at both breakpoints**
+— 618 / 980, cards 596x200 / 370x204.
+
+**Why** (`20875-21444` / `20875-21695`) and the **CTA** (`20875-21495` / `20875-21746`) are
+verbatim reuses; the CTA takes the same copy the About page passes. Both now render on
+three pages and two pages respectively.
+
+**FAQ node IDs** (`20875-21475` desktop / `20875-21726` mobile). Three gloss cards, p-16,
+r-16, in a 24 / 16 gap stack.
+
+| | Desktop | Mobile |
+|---|---|---|
+| Heading | 36/44 (`text-h2`) | 28/36 (`text-h3-mobile`) |
+| Question | 28/36 (`text-h4`) | **20/28** (`text-h6`) |
+| Answer | 16/24 (`text-body-md`) | 16/24 — same at both |
+| Icons | `arrow-up-round.svg` open, `arrow-down-sharp.svg` closed — both full 24x24 | same |
+
+Built as a **real accordion** ([`FaqSection`](components/services/FaqSection.tsx), a client
+component): first item open as Figma draws it, each item toggling independently, with
+`aria-expanded` / `aria-controls`. Figma has no open/closed states beyond the one frame, so
+the interaction is ours.
+
+> **Answers 2 and 3 are written copy, not from Figma.** The design authors an answer for
+> question 1 only; the other two are drawn collapsed with nothing behind them. Written on
+> 2026-07-31 at the user's request, grounded in the site's own claims (the landing page's
+> Audiences section for who RedPear serves, and How We Work step 2 for the "not a generic
+> template" line). **Both still need a factual check against what RedPear actually sells.**
+
+Mobile FAQ is **exact** at 516, items 200/88/88 matching cell for cell. Desktop runs 486
+against 483 because Figma fixes the open card's inner box at 73px, which squeezes its own
+answer text to 21px where one line of 16/24 is 24 — the answer is left to size naturally
+rather than clipped.
+
 ---
 
 ## Conventions and gotchas
 
-**Nav links are root-relative (`/#blog`), never bare fragments (`#blog`).** Since `/about`
-exists there is more than one route, and a bare fragment resolves against whatever page you
-are already on — so `#blog` from `/about` looks for a section that is not there. Only
-`About` is a real route so far; the rest still point at landing-page sections.
+**Mobile section headings are ALWAYS 28/36 — never the 36/44 desktop size.** Standing rule
+from the user (2026-07-31), given after correcting it section by section three times. Write
+`text-h3-mobile font-medium lg:text-h2` when building any new section, **even if the Figma
+frame shows 36/44** — the user has said they may forget to set it in the design and would
+rather the code lead. Flag the mismatch rather than reproducing it.
+
+Three deliberate exceptions, all verified across the three pages:
+
+| Exception | Mobile size | Why |
+|---|---|---|
+| Page `h1` (each hero) | 36/44 | A page title, not a section heading |
+| "Our Story" / Mission / Vision | 32/40 | Card headings inside a section; Figma sets `text-h3` and they are already below desktop's 36 |
+| CTA band | 32/40 **bold** | Figma gives it its own style, Heading/H2/Bold/Mobile |
+
+**Nav links are root-relative (`/#blog`), never bare fragments (`#blog`).** There is more
+than one route now, and a bare fragment resolves against whatever page you are already on —
+so `#blog` from `/about` looks for a section that is not there. `About` and `Services` are
+real routes; `Blog` and `Contact` still point at landing-page sections.
 [`Navbar`](components/layout/Navbar.tsx) marks the active one by comparing `href` to
 `usePathname()`, colouring it `brand-red` and setting `aria-current="page"`. Fragment links
 never match, which is correct — they are not routes.
@@ -776,11 +916,15 @@ at 1440px and 402px and diff against the Figma frames.
 - [x] ~~About section 2 keeps the desktop type scale on mobile.~~ Fixed 2026-07-31: the
       user corrected the Figma frame (28/36 heading, 24/32 titles, 16/24 body) and the code
       was re-pulled to match. **Figma and code agree; no divergence here.**
-- [ ] **About sections 4 and 6 keep the 36/44 heading on mobile.** "Our Approach" and
-      "Partners & Clients" both stay at the desktop scale where every other section on the
-      page steps down to 28/36 — including section 2 after it was corrected. Both are short
-      enough not to overflow, so this is a consistency call rather than a bug. Built as
-      designed; one line each if you want them stepped down.
+- [ ] **Services FAQ answers 2 and 3 are copy we wrote, not Figma's.** Written 2026-07-31 at
+      the user's request and grounded in the site's own claims, but **nobody has confirmed
+      they are factually true** — specifically which non-insurer segments RedPear sells to.
+      Check before launch. See [`FaqSection`](components/services/FaqSection.tsx).
+- [x] ~~About sections 4 and 6, and Services, keep the 36/44 heading on mobile.~~ Resolved
+      2026-07-31: the user made 28/36 a standing rule for all mobile section headings. Every
+      section on all three pages now steps down — audited in-browser. **The About frames for
+      "Our Approach" and "Partners & Clients" still say 36/44, so the code deliberately
+      diverges there**; those two sections are 8px shorter than their frames as a result.
 - [ ] **About section 3: the desktop card's inner frame is 20px too wide in Figma** (560
       inside a 572 card with 16px padding, which only fits a 592 card). The code uses the
       correct 540, which makes the section 29px taller than the frame and wraps Robert's
@@ -851,11 +995,11 @@ at 1440px and 402px and diff against the Figma frames.
       a translate/opacity toggle.
 - [ ] The overlay does not trap focus. Escape closes it and the toggle is reachable, but
       tabbing can still reach content behind it.
-- [ ] Nav and CTA links are still placeholder anchors apart from About, which is now the
-      real `/about` route. `/#services`, `/#blog`, `/#contact` and `/#demo` resolve to
-      landing-page sections; `#claims` resolves to nothing. They firm up as pages get
-      built. The landing page's `ProblemSection` keeps `id="about"`, now unreferenced by
-      the nav — harmless, but drop it if nothing else claims it.
+- [ ] Nav links: `About` and `Services` are real routes now. `/#blog`, `/#contact` and
+      `/#demo` still resolve to landing-page sections; `#claims` resolves to nothing. Two
+      landing sections keep ids the nav no longer references — `ProblemSection`'s
+      `id="about"` and `SolutionsSection`'s `id="services"`. Harmless, but drop them if
+      nothing else claims them.
 - [x] ~~The hero's insurer logo row stretches on wide screens.~~ Fixed 2026-07-30 when the
       row became a marquee — the viewport is now `max-w-content` and holds 1216 at any
       width. The hero's three-card row still measures wide but is visually fine, since the
@@ -875,6 +1019,95 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-31 — FAQ copy written; mobile heading rule made standing
+Two things.
+
+**A standing rule, now in Conventions and in memory:** mobile section headings are *always*
+28/36, never the 36/44 desktop size, **even when the Figma frame says 36/44**. The user gave
+this after correcting it section by section three times and said they may forget to set it in
+the design. Audited every section on all three pages in-browser; all now step down. Three
+exceptions stand: page `h1`s (36/44), the Story card headings (32/40, Figma's own), and the
+CTA band (32/40 bold, its own style).
+
+This means `ApproachSection` and `PartnersSection` **deliberately diverge from the About
+frames**, which still say 36/44 — those two sections are 8px shorter than their frames now.
+
+**FAQ answers 2 and 3 are written copy**, at the user's request; Figma only authors the
+first. Grounded in the site's own claims — the landing Audiences section for who RedPear
+serves, and How We Work step 2 for the "not a generic template" phrasing. Flagged for a
+factual check, since nobody has confirmed the non-insurer segments.
+
+The user also resized the mobile FAQ: question 24/32 → **20/28**, answer 14/20 → **16/24**,
+heading → 28/36. Both mobile sections are now **pixel-exact** — How We Work 972 and FAQ 516,
+items 200/88/88 cell for cell.
+
+### 2026-07-31 — Services page completed: How We Work, Why, FAQ, CTA
+Four sections in one pass. **Only the FAQ was new work** — the other three are reuses, which
+was the point of this page.
+
+`ApproachSection` took `title` / `steps` props (defaulting to the About wording) so
+`/services` can render it as "How We Work" with two reworded steps and "Launch & Support"
+in place of "Optimize". `WhySection` and `CtaSection` are dropped in unchanged.
+
+[`FaqSection`](components/services/FaqSection.tsx) is the only genuinely new component: a
+client-side accordion, first item open as Figma draws it, items toggling independently with
+`aria-expanded` / `aria-controls`. Figma has only the one state, so the interaction is ours.
+
+**How We Work is exact at both breakpoints** (618 / 980) and the **mobile FAQ is exact**
+(588). Desktop FAQ runs 486 against 483 because Figma fixes the open card's inner box at
+73px, squeezing its own answer to 21px where one line of 16/24 is 24 — left to size
+naturally instead. Why and the CTA carry their existing residuals unchanged.
+
+**Figma only authors an answer for FAQ question 1.** Questions 2 and 3 have no answer node
+at all, so there is nothing to reveal; they render as static rows rather than dead toggles,
+and adding `answer` to the array makes them expand. Needs copy from the user — logged.
+
+### 2026-07-31 — Services hero mobile metrics corrected
+User revised the mobile bento cards in Figma and supplied all 12 title/body nodes. Pulled
+the whole mobile frame (`20875-21622`) rather than just those, because the change was as
+much about **spacing** as type — and the type turned out to already be right.
+
+Three real differences from the landing's mobile bento, none of which were type sizes:
+padding 16 → **24 horizontal / 16 vertical**, title-to-body gap 16 → **8**, and the featured
+card's title dropping from semibold to **medium** (that frame draws no featured distinction
+on mobile). Card-to-card gap also goes 24 → 16.
+
+`BentoCard` gained a `mobileVariant` prop rather than being changed outright, because the
+landing's flat 16px mobile pad is a deviation the user explicitly asked for. Default is
+`"landing"`, so the live page is untouched — **regression-checked at both breakpoints**: the
+landing's bento cards still measure pad 16 / gap 16 / featured semibold on mobile and
+596x604 on desktop.
+
+One trap worth remembering, now in the notes above: `px-6 py-4 lg:p-6` does **not** work.
+Tailwind emits padding-inline/block after the padding shorthand, so the unprefixed `py-4`
+beats `lg:p-6` at every width. Spelled `lg:py-6` instead.
+
+Mobile now measures 3046 against Figma's 3034 — +2 per card, from a border Figma does not
+draw on these cards at all. Kept so they match the landing's visually; dropping it for the
+services variant would make the section pixel-exact.
+
+### 2026-07-31 — Services page started: `/services` route + hero
+Screens 5/6. Mapped the whole desktop frame first (see [Services page
+sections](#services-page-sections)) because the point of this page is how much already
+exists: **four of its six blocks are components we have already built.** Only the hero and
+an FAQ accordion are new work.
+
+Added [`app/services/page.tsx`](app/services/page.tsx) and
+[`ServicesHero`](components/services/ServicesHero.tsx). The hero holds the copy *and* the
+six bento cards, because Figma groups them in one "Hero" frame.
+
+`BentoCard` fits **unchanged** — padding, gap, image height and radius all match this frame
+exactly. Cards 1 and 2 turned out to carry the landing's copy verbatim, so they reuse
+`ai-solutions.png` and `insurance-platforms.png` too; only four new images were needed.
+
+Nav `Services` now points at `/services` and highlights there, the same treatment `About`
+got. That means the landing page's `SolutionsSection` keeps an `id="services"` the nav no
+longer references — harmless, logged.
+
+Desktop measures 2280 against Figma's 2274, the usual +2 per card row. **Mobile is not yet
+verified against a frame** — screen 6 exists but has not been handed over, so the mobile
+layout follows established patterns rather than measured nodes.
 
 ### 2026-07-31 — About section 7 (CTA band) reuses the landing `CtaSection`
 The About CTA is the landing card with different wording — same geometry, watermark, gloss

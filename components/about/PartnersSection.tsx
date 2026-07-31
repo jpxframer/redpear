@@ -20,9 +20,7 @@ export function PartnersSection() {
   return (
     <section className="px-4 py-6 lg:px-28 lg:py-[50px]">
       <div className="mx-auto flex max-w-content flex-col gap-6 lg:gap-[50px]">
-        {/* Figma keeps this at 36/44 on mobile rather than stepping it down —
-            same as "Our Approach". See Known follow-ups. */}
-        <h2 className="text-center font-display text-h2 font-medium text-brand-black">
+        <h2 className="text-center font-display text-h3-mobile font-medium text-brand-black lg:text-h2">
           Partners &amp; Clients
         </h2>
 
