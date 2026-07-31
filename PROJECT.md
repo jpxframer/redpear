@@ -772,8 +772,19 @@ mobile `px-4` (16px).
   would badly squash the wide marks.
 
 The animation is `--animate-marquee` in `globals.css`, running -50% -> 0 so logos travel
-left to right. It pauses on hover and is disabled under `prefers-reduced-motion`. The
-edge fade mask is ours, not in the Figma frame.
+left to right. The edge fade mask is ours, not in the Figma frame.
+
+**It deliberately does NOT respect `prefers-reduced-motion`.** It used to carry
+`motion-reduce:animate-none`, which froze the row for anyone with iOS Reduce Motion,
+Android "Remove animations", Windows "Show animations off" or certain battery savers on —
+reported by the user as "not moving on some devices" and removed on their instruction
+(2026-07-31). **Do not re-add it without asking.** The accessibility tradeoff is real and
+was flagged; if it needs revisiting, a visible pause control or a much slower
+reduced-motion variant is better than freezing it.
+
+The hover pause stays. Tailwind v4 scopes `hover:` behind `@media (hover: hover)`, so it
+cannot stick on a touch device after a tap — that was the other candidate for this bug and
+it is already handled.
 
 **Cap section content with `mx-auto max-w-content`.** Figma lays every section out on a
 1216px column (1440 frame minus the 112px gutters), exposed as the `--container-content`
@@ -1019,6 +1030,22 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-31 — Insurer marquee now runs on every device
+User reported the hero logos static on some devices. Cause was
+`motion-reduce:animate-none` on the track: any device with reduce-motion enabled — iOS
+Reduce Motion, Android "Remove animations", Windows "Show animations off", some battery
+savers — got `animation: none`. Removed on the user's instruction.
+
+Verified by measuring actual pixel travel over 1.2s rather than reading `animation-name`,
+across four cases: normal and reduced motion, at 1440 and 402. All four move.
+
+The other suspect — a `hover:` pause sticking after a tap on touch — was already handled:
+Tailwind v4 scopes `hover:` behind `@media (hover: hover)`.
+
+Accessibility tradeoff flagged to the user: continuous motion with no opt-out can affect
+people with vestibular sensitivity. A pause control or a slow reduced-motion variant would
+address that without freezing the row; noted in Conventions if it is ever revisited.
 
 ### 2026-07-31 — FAQ copy written; mobile heading rule made standing
 Two things.

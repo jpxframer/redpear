@@ -66,7 +66,14 @@ export function InsurerLogos() {
             "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
         }}
       >
-        <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
+        {/* Deliberately NOT gated on prefers-reduced-motion. The user asked for
+            this row to scroll on every device (2026-07-31); an earlier
+            `motion-reduce:animate-none` froze it for anyone with iOS Reduce
+            Motion, Android "Remove animations" or a battery saver switched on.
+            Do not re-add it without asking. The hover pause stays — Tailwind v4
+            already scopes `hover:` to `@media (hover: hover)`, so it cannot
+            stick on a touch device after a tap. */}
+        <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
           <LogoRun />
           <LogoRun hidden />
         </div>
