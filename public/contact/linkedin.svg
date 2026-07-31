@@ -1,0 +1,11 @@
+<svg width="20.5" height="20.5" viewBox="0 0 20.5 20.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Figma exports this glyph vertically mirrored and corrects it with a transform
+     on the parent frame. The flip is baked in here so the file is correct on its
+     own: without it the "i" dot sits below the stem instead of above it. -->
+<g transform="translate(0 20.5) scale(1 -1)">
+<path d="M5.25 12.25L5.25 5.25" stroke="#F40B0D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.25 9.25V5.25M9.25 9.25C9.25 10.9069 10.5931 12.25 12.25 12.25C13.9069 12.25 15.25 10.9069 15.25 9.25V5.25M9.25 9.25V12.25" stroke="#F40B0D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.25801 15.25L5.24902 15.25" stroke="#F40B0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0.75 10.25C0.75 14.7283 0.75 16.9675 2.14124 18.3588C3.53249 19.75 5.77166 19.75 10.25 19.75C14.7283 19.75 16.9675 19.75 18.3588 18.3588C19.75 16.9675 19.75 14.7283 19.75 10.25C19.75 5.77166 19.75 3.53249 18.3588 2.14124C16.9675 0.750001 14.7283 0.750001 10.25 0.750001C5.77166 0.750001 3.53249 0.750001 2.14124 2.14124C0.75 3.53249 0.75 5.77166 0.75 10.25Z" stroke="#F40B0D" stroke-width="1.5" stroke-linejoin="round"/>
+</g>
+</svg>

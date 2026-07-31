@@ -11,6 +11,18 @@ const variants: Record<Variant, string> = {
   secondary: "gloss-white bg-brand-white font-normal text-brand-black",
 };
 
+/**
+ * The button's *look*, separated from the element it renders.
+ *
+ * `Button` below is always a `Link`, which is right for every CTA on the site —
+ * they all navigate. The contact form's submit is the one control that must be a
+ * real `<button type="submit">`, so it pulls the same class list through here
+ * rather than restating it and drifting.
+ */
+export function buttonClasses(variant: Variant = "primary", className = "") {
+  return `${base} ${variants[variant]} ${className}`;
+}
+
 type ButtonProps = {
   variant?: Variant;
   href: string;
@@ -24,7 +36,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <Link href={href} className={`${base} ${variants[variant]} ${className}`} {...props}>
+    <Link href={href} className={buttonClasses(variant, className)} {...props}>
       {children}
     </Link>
   );

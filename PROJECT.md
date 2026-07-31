@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-31 (About and Services pages both structurally complete)
+**Last updated:** 2026-07-31 (all eight screens built; contact map is now a real embed)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Live:** https://redpear.vercel.app — **publicly reachable**, deployed from `main` via the
 Vercel dashboard's GitHub integration, so every push to `main` redeploys. There is no
@@ -71,7 +71,22 @@ components that just need wiring with new copy.
 **The Services page is structurally complete.** Only two of its six blocks needed new
 components; the other four are reuses.
 
-**Next up:** screens 7–8, which have not been inspected.
+### Contact page (`/contact`) — in progress
+
+Screens 7/8, opened on 2026-07-31. **The screen is "Contact"** — that was unknown until the
+frame was mapped. Four blocks; only the hero was new work.
+
+| Block | Status |
+|---|---|
+| Hero — "Let's Build the Future of Insurance Together" + form/panel/map card | ✅ |
+| 1 — Frequently Asked Questions | ✅ (reuses the Services `FaqSection`) |
+| 2 — CTA band | ✅ (reuses the shared `CtaSection`) |
+| 3 — Footer | ✅ (reuses the shared `Footer`) |
+
+**The Contact page is structurally complete.** Three of its four blocks are reuses.
+
+**All eight core screens are now built.** What is left is wiring, not layout — see Known
+follow-ups, of which the contact form having no destination is the most serious.
 
 **Blocking launch, not just polish:** the footer newsletter form has no destination, the
 CTA buttons have no booking flow, and most nav/footer links are placeholder anchors. All
@@ -79,8 +94,9 @@ logged under Known follow-ups.
 
 **Two decisions still open**, both worth settling before the sections that need them:
 
-1. **Where does the footer's newsletter form post?** Mailchimp, Resend, a route handler
-   writing to a database, or a `mailto:` stopgap. Needed for section 9.
+1. **Where do the two forms post?** Mailchimp, Resend, a route handler writing to a
+   database, or a `mailto:` stopgap. This now covers the footer newsletter *and* the
+   contact form, which is the more urgent of the two — see Known follow-ups.
 2. **Are sections 6 and 7 content hardcoded or CMS-driven?** Hardcoded now; extracting
    later is fine, but it shapes how section 7 gets built.
 
@@ -124,6 +140,7 @@ app/
   page.tsx             landing page composition (section order lives here)
   about/page.tsx       /about composition + its own metadata
   services/page.tsx    /services composition + its own metadata
+  contact/page.tsx     /contact composition + its own metadata
 components/
   services/            Services page sections: ServicesHero, FaqSection
   about/               About page sections, in page order: AboutHero,
@@ -131,7 +148,12 @@ components/
                          ApproachSection, PartnersSection
                        ApproachSection is SHARED — /services renders it as
                          "How We Work" via title/steps props.
-  ui/Button.tsx        shared CTA (primary = red, secondary = white)
+  contact/             Contact page sections: ContactHero, ContactForm (client),
+                         ContactPanel, ContactMap (Google embed, keyed off
+                         NEXT_PUBLIC_GOOGLE_MAPS_API_KEY — see .env.example)
+  ui/Button.tsx        shared CTA (primary = red, secondary = white). Always a
+                         Link; `buttonClasses()` exports the look on its own for
+                         the one real <button> on the site, the contact submit.
   ui/IconBadge.tsx     red gloss square + 24px icon slot (see the partial-frame gotcha)
   layout/Navbar.tsx    responsive nav + mobile overlay, client component
   sections/            one file per landing section, in page order:
@@ -244,10 +266,17 @@ accept, a pasted `figd_` token — it is a credential leak with no upside.
 | 4 | `20875-19146` | About — Mobile (402x12801) | 🟡 in progress |
 | 5 | `20875-21362` | Services — Desktop (1440x5769) | 🟡 in progress |
 | 6 | `20875-21622` | Services — Mobile (402x8076) | 🟡 in progress |
-| 7 | `20875-21873` | not yet inspected | ⬜ not started |
-| 8 | `20875-22083` | not yet inspected | ⬜ not started |
+| 7 | `20875-21873` | Contact — Desktop (1440x2965) | 🟡 in progress |
+| 8 | `20875-22083` | Contact — Mobile | 🟡 in progress |
 
-Screens 3–8 have not been opened yet; fill in their real names when each is picked up.
+Screens 7–8 were handed over **together as one screen's desktop and mobile**, so that
+pairing is stated by the user rather than inferred from document order — and it held up:
+both frames are the Contact page.
+
+**The prediction recorded here before the frames were opened was right.** The desktop hero
+(`20875-21889`) and cards (`20875-21894`) are 5 apart, and `21894` turned out to be a
+**child** of `21889`, not a sibling block — the same shape as the Services hero. They are
+one component, `ContactHero`.
 
 ### Landing page sections
 
@@ -727,6 +756,171 @@ against 483 because Figma fixes the open card's inner box at 73px, which squeeze
 answer text to 21px where one line of 16/24 is 24 — the answer is left to size naturally
 rather than clipped.
 
+### Contact page sections
+
+Desktop `20875-21873` (1440x2965) and mobile `20875-22083`. Enumerated 2026-07-31. Only the
+hero is new work; the other three blocks are existing components.
+
+| # | Block | Desktop node | Mobile node | Desktop height |
+|---|---|---|---|---|
+| — | Hero + form/panel/map card | `20875-21889` | `20875-22085` | 1536 |
+| 1 | Frequently Asked Questions | `20875-21935` | `20875-22138` | 483 |
+| 2 | CTA band | `20875-21956` | `20875-22158` | 488 |
+| 3 | Footer | `20875-21980` | — | 378 |
+
+Blocks 1-3 are **verbatim reuses, diffed before wiring.** The FAQ's three questions and its
+one authored answer are word-for-word the `/services` ones; the CTA's heading and body are
+the "Ready to Transform…" pair `/about` and `/services` already pass to `CtaSection`, with
+the same 488/500 geometry, watermark offsets and 52/56 → 32/40 bold type.
+
+> **The Contact FAQ frame is stale relative to the Services one.** Its mobile heading is
+> 36/44 and its questions 24/32, which is what `/services` looked like *before* the user
+> corrected it on 2026-07-31 to 28/36 and 20/28. `FaqSection` renders the corrected sizes on
+> both pages, so the Contact mobile FAQ measures **516 against the frame's 588** — 52 of
+> that is the heading dropping to one line at 28px, 20 is the smaller questions. Deliberate;
+> update the Contact frame to match `/services` and the numbers converge.
+
+Desktop FAQ is 486 against 483 and the CTA 490/502 against 488/500 — the same residuals both
+components already carried on their other pages, not new ones.
+
+**Hero node IDs.** Copy `20875-21891` / `20875-22087`; card `20875-21894` / `20875-22090`.
+The card is a **child** of the hero frame, so `ContactHero` holds both — same grouping as
+`ServicesHero`.
+
+The copy block is metrically **identical to the Services hero's** — 800px centred column,
+52/56 → 36/44 heading, 18/28 → 16/24 sub, 24/16 internal gap, 50/24 down to the card. Its
+class list is the same one, deliberately.
+
+Card structure, desktop / mobile:
+
+| Level | Desktop | Mobile |
+|---|---|---|
+| Outer shell | 1216x1116, p-24, **r-24** | 370x1751, p-16, **r-16** |
+| Form column | 734 wide, flex-1 | full width |
+| Contact panel | **fixed 402**, p-24, r-16, red | full width, p-16, r-16 |
+| Map card | full width, p-24, r-16 | p-24 — **does not step down** |
+| Map viewport | 1120x483 | 290x483 — same height |
+
+The outer shell is the only thing whose radius changes across breakpoints, the same shape as
+the About page's Story card. The map card keeps 24px padding on mobile where every other
+card on the page drops to 16.
+
+**The map is a real Google embed, not Figma's screenshot.**
+[`ContactMap`](components/contact/ContactMap.tsx) fills that 483px viewport with an
+`iframe`, replacing the flat `map.png` the frame draws — which was a PNG of Google Maps
+complete with baked-in UI chrome and attribution, upscaled from 1083 into a 1120 slot, and a
+licensing question on top. The card and viewport geometry are unchanged, so nothing around it
+moved.
+
+It resolves **two URL shapes**, and which one you get depends on an env var:
+
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | URL | Status |
+|---|---|---|
+| set | `/maps/embed/v1/place` | The documented Maps Embed API. `place` mode is free and unmetered. |
+| unset | `maps.google.com/maps?…&output=embed` | Undocumented. Works today, no setup, can break without notice. |
+
+The keyless URL is the **fallback so the page is never broken while the key is being sorted
+out** — it is a stopgap, not the destination. Set the key and the component switches over on
+its own, no code change. `.env.example` documents the whole thing, including the part that
+matters most: `NEXT_PUBLIC_` inlines the key into the client bundle, so it **must** be
+restricted by HTTP referrer and to the Maps Embed API in the Google Cloud console, or anyone
+can lift it off the page and spend your quota against your other enabled APIs.
+
+The address is a constant at the top of the component (`19 Kofi Annan Street, Airport
+Residential Area, Accra, Ghana`, zoom 16) — change it there, not in a URL.
+
+**The form fields come from an external Figma library, "Simple Design System".** Their Code
+Connect snippets resolve to `InputField` / `SelectField` / `TextareaField`, none of which
+exist in this repo — so pull those nodes with `disableCodeConnect: true` to get real
+markup instead of unusable component calls. Field geometry: label 16/24 medium, 8px to the
+control, control at 16/12 padding on an 8px radius. Rows are 20px apart; the two fields in a
+row are 32px apart at **both** breakpoints, only the axis changes.
+
+That library also brings its own `#1e1e1e` text token, which is not a RedPear colour. Label,
+input and chevron all use it in Figma; all three are mapped to `brand-black` here. The
+difference is invisible and it keeps the page on the token set.
+
+**The Select is the odd field out in Figma** — it carries the filter-based `gloss-white`
+where the three inputs and the textarea carry `gloss-bento` (a real box-shadow). All four are
+unified on `gloss-bento` so one field in a row does not have visibly different corners.
+
+**Figma fills every field with example content** ("Kwame Asante", a written message), which
+is treated as **placeholders**, not values — pre-filling someone's name and message would be
+wrong. On the user's instruction (2026-07-31) they are worded as *instructions* rather than
+fake sample data: "Enter your full name", "Enter your email address", "Tell us what you're
+looking to build or improve". The phone one is just "Enter your number" because the dial code
+sits in its own control beside it. That control has since narrowed and the input now has 243px
+rather than 193, so a longer phone placeholder would fit — the user's call on 2026-07-31 was
+to leave it short.
+
+One consequence for the textarea: Figma's mobile box is 120 tall only because the example
+message wraps to four lines at 306px wide, while the component's declared min-height is 80 at
+both breakpoints. The drawn height is reproduced (`min-h-30 lg:min-h-20`), because a two-line
+message box on a phone is mean. `resize-y` matches the drag grip Figma draws in the corner.
+
+**The dialling-code select is not in Figma** — added 2026-07-31 on the user's instruction so
+visitors pick their code rather than typing it. Ghana leads and is the default; the rest are
+the African markets the site claims to serve, then the likeliest sources of overseas
+enquiries. Each option puts the **dial code first** ("+233 Ghana"), and no code appears twice
+so every option's value is unambiguous. It posts as `countryCode` alongside `phone`.
+
+**Closed it shows the code alone; open, the list still names the country.** Asked for by the
+user on 2026-07-31. A native `<select>` paints the selected option's *whole* text when closed
+and offers no way to shorten it, so the pattern is:
+
+- the real `<select>` is laid over the field at **`opacity-0`** — still the focusable control,
+  still what opens the popup, still what submits;
+- a plain `<div>` underneath draws the code, from `useState`;
+- the `<option>` elements are **untouched**, which is exactly why the popup reads in full.
+
+Three things that pattern has to get right, all verified in-browser rather than assumed:
+
+| Requirement | How |
+|---|---|
+| No dead strip that fails to open the popup | select is `absolute inset-0`, pixel-aligned over the box; hit-testing the box's centre returns the `SELECT` |
+| Not announced twice by a screen reader | the box is `aria-hidden`; the select keeps the `aria-label` |
+| Still shows a focus ring | `peer-focus-visible:` on the box, borrowed from the select — the box is never itself focused |
+
+Do **not** try to solve this with `color: transparent` on the select instead. Browsers disagree
+about whether an `option`'s own colour also paints the closed control, so the popup can go
+invisible on some of them.
+
+The wrapper is **100px** wide (was 150 when it had to fit "+233 Ghana"), which hands the phone
+input the difference: 243 desktop, 230 mobile.
+
+> **Watch the width.** `control` already sets `w-full`, so the 100px lives on the select's
+> *wrapper*, not the select. Two width utilities on one element is the Tailwind
+> property-order trap this file already warns about.
+
+**The panel's 150px gap is expressed as `justify-between`.** Figma spells the space above
+"Follow Us On" as a literal 150px on desktop and 16px on mobile. `lg:justify-between` says
+the same thing without the magic number and survives the copy changing length. It costs 6px:
+the panel stretches to the form column's 504 rather than sitting at 498, vertically centred.
+
+**The panel's three headings are 24/32 (`text-h5`) where Figma sets 28/36.** Stepped down on
+the user's instruction, 2026-07-31. Deliberate divergence at both breakpoints; the frame
+still says 28. It takes 12px off the mobile hero (3 headings x 4px of line height), which is
+why that section now measures 2087 rather than the frame's 2099.
+
+**LinkedIn and Instagram are a different icon set from `public/social/`** — same brands,
+different drawings, so they live in `public/contact/`. Both export as **20.5x20.5 partial
+frames** centred in a 24px slot (`IconBadge`'s `sizeClass`), and Figma stores both
+**vertically mirrored**, correcting them with a transform on the parent. That flip is baked
+into the committed SVGs so the files are correct standalone — without it LinkedIn's "i" dot
+sits below its stem.
+
+> **Figma had the XRP (Ripple) mark in the third slot, not the X logo** — a different logo
+> that looks alike at 24px. Replaced 2026-07-31 on the user's instruction with the official X
+> glyph the footer already uses, recoloured red for the white badge
+> (`public/contact/x.svg`). The two rows on this page now show the same three brands. **The
+> Figma frame still has XRP**; swap it there too.
+
+**Pixel-exact on mobile with no residual** — shell 1751, form 792, panel 364, map card 531,
+every field 48; the section is 2087 rather than 2099 only because of the smaller panel
+headings above. Desktop is exact too (1216x1115 shell, 734 form, 1168x531 map card, 1120x483
+map, 351x48 fields) except the deliberate panel +6, and the submit button at 191.3 against
+190 because it uses the site's `font-semibold` where Figma's button text is Inter Medium.
+
 ---
 
 ## Conventions and gotchas
@@ -885,6 +1079,19 @@ The second failure is quiet: the dev server keeps answering 200 and serves a sta
 partial page, so it looks like a layout bug rather than a compile error. If a component's
 markup vanishes from the DOM, check for this before debugging CSS.
 
+**`TaskStop` on a backgrounded `npm run dev` leaves the `next dev` child running.** It kills
+the npm wrapper only. So "I stopped dev" is not true, and the very next `rm -rf .next` pulls
+the directory out from under a live server — which then 500s every route with
+`ENOENT ... routes-manifest.json`, exactly the catastrophic-looking failure below. Meanwhile
+a freshly started server silently takes **port 3001**, so `curl localhost:3000` is still
+talking to the broken one. Hit on 2026-07-31.
+
+Stop it by port instead, then confirm the port is free:
+
+```powershell
+Get-NetTCPConnection -LocalPort 3000 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+```
+
 **Never run `npm run build` while `npm run dev` is running.** They share the `.next`
 directory, so the production build overwrites the dev server's compiled assets underneath
 it. The dev server keeps answering `200` and its log looks healthy, but the page it serves
@@ -898,6 +1105,20 @@ building, or build against a separate `--distdir`.
 double-encodes every non-ASCII character and turns em dashes and emoji into mojibake. This
 corrupted this file once. Use the Edit or Write tools for text edits; reserve PowerShell
 for running commands.
+
+**`claude mcp list` reporting "✔ Connected" does NOT mean the tools are in the session.**
+Hit on 2026-07-31: the health check passed against `https://mcp.figma.com/mcp` while the
+session itself had no `get_metadata`, `get_design_context`, `get_screenshot` or
+`download_assets` — searching the tool registry by name, by keyword and by Figma-specific
+names all returned nothing. The CLI probes the server; the tool registry is bound when the
+session starts. A server that connects late is healthy and unusable at the same time.
+**Fix is to restart Claude Code** (then `claude --continue` to resume the thread); `/mcp`
+may also rebind. Nothing can be done about it from inside the session.
+
+**A pasted `figd_` token is not a workaround for this, and is not to be used.** The
+standing rule below holds even when the MCP is unreachable — the right move is to restart,
+not to drive the REST API with a personal access token. One was pasted into the transcript
+on 2026-07-31 and the user was told to revoke it.
 
 **Read the design-to-code skill before `get_design_context`.** It is a hard prerequisite:
 `skill://figma/figma-design-to-code/SKILL.md` via the MCP resource.
@@ -946,6 +1167,44 @@ at 1440px and 402px and diff against the Figma frames.
 - [ ] **About section 2: "Trust & Security" has no closing full stop** where the other
       three cards do. Reproduced verbatim from Figma.
 
+- [ ] **The contact form is built but NOT WIRED — and this is the worse of the two.**
+      `ContactForm`'s `onSubmit` only calls `preventDefault`, so a visitor can fill in
+      their name, email, phone, service and message, click "Send a Message", and the
+      enquiry goes nowhere with no error. A silently-swallowed sales enquiry is worse than
+      no form at all. Needs a real destination before `/contact` is linked from anywhere
+      public — and the nav now links to it. Same open decision as the newsletter below;
+      settling one probably settles both.
+      See [`ContactForm.tsx`](components/contact/ContactForm.tsx).
+- [ ] **The contact form's service options are copy we wrote, not Figma's.** The design
+      authors one selected value ("Digital Transformation") and no option list, so the six
+      options are taken verbatim from the six service cards on `/services`. Same class of
+      thing as the FAQ answers, and it needs the same factual check.
+- [ ] **The contact panel's social links have no hrefs.** Figma carries none, so all three
+      point at `#`. They are real anchors with accessible names, they just have nowhere to
+      go — the same state the footer's three are in.
+- [x] ~~The contact panel's third social icon is the XRP (Ripple) mark, not the X logo.~~
+      Fixed in code 2026-07-31 on the user's instruction — it now uses the footer's official
+      X glyph, recoloured red. **The Figma frame still has XRP**; swap it there so the two
+      stop disagreeing.
+- [ ] **The contact form's dialling-code list is ours, not Figma's**, and it is a curated 39
+      entries rather than every country. Ghana is the default. If an enquiry ever needs to
+      come from somewhere not on the list there is no way to enter it — worth revisiting if
+      that matters, either by completing the list or allowing a free-text code.
+- [x] ~~The contact page's map is a flat screenshot, not a map.~~ Replaced 2026-07-31 with a
+      real Google embed, [`ContactMap`](components/contact/ContactMap.tsx). `map.png` is
+      gone, and with it the upscaling, the baked-in UI chrome and the licensing question.
+- [ ] **The map is running on the keyless, undocumented Google URL.** It works today and
+      needs no setup, which is why it is the fallback, but it is not a supported API and can
+      break without notice. Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in the Vercel project
+      settings (and `.env.local` for dev) and the component moves onto the real Maps Embed
+      API on its own — **no code change, just the variable**. `place` mode is free and
+      unmetered. **Restrict the key** by HTTP referrer and to the Maps Embed API when you
+      create it; `NEXT_PUBLIC_` ships it to the browser by design. Full instructions are in
+      [`.env.example`](.env.example). Worth doing before launch.
+- [ ] **Nobody has confirmed the map's address.** `ContactMap` geocodes the one the contact
+      panel displays, plus ", Accra, Ghana" for the geocoder — so if the panel's address is
+      wrong or approximate, the pin is too, and the two now have to be kept in step by hand.
+      Check the pin drops on the right building before launch.
 - [ ] **Footer newsletter form is built but NOT WIRED.** Its `onSubmit` only calls
       `preventDefault`, so a visitor can type an email, click Subscribe, and nothing
       happens. The markup is correct and accessible (`type="email"`, `required`, label
@@ -1030,6 +1289,121 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-31 — Dial code shows "+233" closed, "+233 Ghana" open
+User asked for the phone field's dialling-code control to show only the code when closed,
+while still listing the country when opened.
+
+A native `<select>` paints the selected option's whole text when closed and gives you no
+handle on it, so the control is now the real select at **`opacity-0`** laid over a plain
+`<div>` that draws the code from state. The options are untouched, which is what keeps the
+popup reading in full. The alternative — `color: transparent` on the select — was rejected
+because browsers disagree about whether an `option`'s own colour also paints the closed
+control, so the popup can go invisible on some of them.
+
+Verified in Chrome at 1440 and 402 rather than assumed, because an invisible control over a
+visible one is exactly the kind of thing that looks right and is not: the select is
+pixel-aligned over the box (hit-testing the box's centre returns the `SELECT`, so there is no
+dead strip), the box is `aria-hidden` so the field is announced once, and the focus ring is
+borrowed via `peer-focus-visible:`.
+
+The wrapper dropped 150 → **100px**, since it no longer has to fit "+233 Ghana". The phone
+input takes the difference (243 desktop, 230 mobile). That undoes the reason the phone
+placeholder was kept terse; the user's call was to leave the copy as it is.
+
+### 2026-07-31 — The contact map is a real map now
+Replaced Figma's flat `map.png` — a screenshot of Google Maps, upscaled from 1083 into a 1120
+slot, with Google's UI chrome and attribution baked into the pixels and a licensing question
+attached — with an actual embed,
+[`ContactMap`](components/contact/ContactMap.tsx). Card and viewport geometry are unchanged,
+so nothing around it moved.
+
+**It resolves two URLs.** With `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` set it uses the documented
+Maps Embed API; without one it falls back to the keyless `output=embed` URL, which works
+today with no setup but is undocumented and can break without notice. The fallback exists so
+the page is never broken while the key is sorted out — setting the variable switches it over
+with no code change. [`.env.example`](.env.example) carries the full setup, including the
+part that matters: `NEXT_PUBLIC_` puts the key in the client bundle by design, so it has to
+be restricted by referrer and to the Maps Embed API or it can be lifted off the page.
+
+Live today on the fallback. Getting a restricted key onto Vercel is logged as a follow-up,
+as is checking the pin actually lands on the right building — the address is a constant in
+the component and duplicates the one the panel displays.
+
+### 2026-07-31 — Contact page finished: FAQ + CTA wired, hero revised
+Second pass, all from user instructions. **The Contact page is now structurally complete,
+which makes all eight core screens built.**
+
+Four changes to the hero, then the last two blocks.
+
+**Icon swap.** The third social glyph was the XRP (Ripple) mark; it now uses the official X
+glyph the footer already ships, recoloured red for the white badge. Figma still has XRP —
+logged so the frame gets fixed rather than the mismatch being rediscovered later.
+
+**Placeholders reworded** from Figma's fake sample data ("Kwame Asante") to instructions
+("Enter your full name"). The phone one is deliberately short — "Enter your number" — because
+the new dial-code control eats 150px and the remaining 193 clips anything longer. Caught by
+looking at the render, not the markup.
+
+**A dialling-code select**, which is not in Figma at all. 39 curated entries, Ghana default,
+dial code written first in each label so it survives clipping. The width had to go on the
+wrapper rather than the select, since `control` already carries `w-full` — the Tailwind
+property-order trap this file has warned about twice now.
+
+**Panel headings 28/36 → 24/32.** The user asked for "28 or 24"; 28 was already what it was,
+so 24 is the only actual reduction. Deliberate divergence from the frame, and it takes 12px
+off the mobile hero.
+
+**FAQ and CTA are verbatim reuses**, diffed first rather than assumed. The CTA lands at the
+same 490/502 it carries on two other pages. The FAQ turned up something worth knowing: the
+**Contact frame is stale relative to the Services one** — mobile heading 36/44 and questions
+24/32, i.e. what `/services` looked like before the user corrected it earlier the same day.
+`FaqSection` renders the corrected sizes, so the section measures 516 against the frame's
+588. That is the frame being behind, not the code.
+
+One process note: `TaskStop` kills the npm wrapper but **leaves the `next dev` child alive**.
+Deleting `.next` after "stopping" dev therefore hit the same catastrophic-looking failure
+this file already documents — `/` 500ing on a missing `routes-manifest.json` while the new
+server quietly took port 3001. Kill by port, not by task.
+
+### 2026-07-31 — Contact page started: `/contact` route + hero
+Screens 7/8. **The unnamed screen is Contact** — mapped the desktop root first, which
+settled both the name and the shape: four blocks, of which only the hero is new work. The
+FAQ, CTA and footer all look like verbatim reuses (flagged to diff, not assume).
+
+Added [`app/contact/page.tsx`](app/contact/page.tsx),
+[`ContactHero`](components/contact/ContactHero.tsx),
+[`ContactForm`](components/contact/ContactForm.tsx) (client) and
+[`ContactPanel`](components/contact/ContactPanel.tsx). The hero holds the copy *and* the
+card, because Figma nests the card inside the Hero frame — exactly as predicted in this file
+before the frames were opened. Nav `Contact` now points at `/contact` rather than
+`/#contact`, the same treatment About and Services got.
+
+The copy block reuses `ServicesHero`'s class list unchanged; its metrics are identical.
+`IconBadge variant="white"` is exactly the 40x40 social badge. `Button` gained an exported
+`buttonClasses()` so the submit — the only real `<button>` CTA on the site — shares the
+look without `Button` having to become polymorphic.
+
+**The form fields are the interesting part.** They come from an external Figma library
+("Simple Design System") whose Code Connect snippets resolve to components this repo does
+not have, so they had to be re-pulled with `disableCodeConnect: true`. That library also
+drags in a `#1e1e1e` text token and an inconsistent gloss on the Select; both normalised
+onto our tokens. Figma's field *values* are treated as placeholders, which is the one place
+the build intentionally departs from what the frame draws.
+
+**Mobile is pixel-exact with no residual** — 2099 section, 1751 shell, 792 form, 364 panel,
+531 map card, 48 fields. Desktop is exact too apart from two disclosed items: the panel is
+504 rather than 498 because its 150px magic gap became `justify-between`, and the submit
+button is 191.3 against 190 because it keeps the site's semibold where Figma sets Inter
+Medium.
+
+Two asset gotchas worth remembering, both now in the notes above: Figma stores the LinkedIn
+and Instagram glyphs **vertically mirrored** and corrects them on the parent frame (the flip
+is baked into the committed SVGs instead), and the third "social" icon is the **XRP mark,
+not the X logo**.
+
+**The form is not wired**, which is logged as the most serious open item on the site — a
+contact form that silently drops enquiries is worse than the newsletter one.
 
 ### 2026-07-31 — Insurer marquee now runs on every device
 User reported the hero logos static on some devices. Cause was
