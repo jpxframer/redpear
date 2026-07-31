@@ -23,14 +23,20 @@ export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
 
-  // The overlay is fixed to the viewport, so it needs the bar's real height to
-  // start directly beneath it. Measured rather than hard-coded so changing the
-  // logo size or padding cannot silently leave a gap or an overlap.
+  // Two things need the bar's real height: the overlay, which is fixed to the
+  // viewport and has to start directly beneath it, and the spacer below, which
+  // holds open the space the bar no longer occupies now that it is fixed.
+  // Measured rather than hard-coded so changing the logo size or padding cannot
+  // silently leave a gap or an overlap.
+  //
+  // getBoundingClientRect rather than offsetHeight: the latter rounds to whole
+  // pixels, and the bar is 81.05 tall. The spacer has to match it exactly or the
+  // whole page sits a fraction high.
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
 
-    const measure = () => setHeaderHeight(el.offsetHeight);
+    const measure = () => setHeaderHeight(el.getBoundingClientRect().height);
     measure();
 
     const observer = new ResizeObserver(measure);
@@ -72,9 +78,13 @@ export function Navbar() {
 
   return (
     <>
+      {/* Fixed rather than sticky, on the user's instruction (2026-07-31): sticky
+          was letting page content show through the bar while scrolling on some
+          browsers. `inset-x-0` is required — a fixed block with auto left/right
+          shrinks to fit its contents instead of spanning the viewport. */}
       <header
         ref={headerRef}
-        className="sticky top-0 z-50 border-b border-neutral-200 bg-brand-white"
+        className="fixed inset-x-0 top-0 z-50 border-b border-neutral-200 bg-brand-white"
       >
         <div className="flex items-center justify-between px-4 py-4 lg:px-28">
           <Link href="/" aria-label="RedPear home" className="shrink-0">
@@ -133,6 +143,16 @@ export function Navbar() {
           </button>
         </div>
       </header>
+
+      {/* A fixed bar occupies no space in the flow, so this holds that space open
+          and every page starts exactly where it did when the bar was sticky —
+          without it the whole site slides up underneath the nav.
+
+          81.05 is the bar's real height (48.05 logo + 32 padding + 1 border) and
+          is identical at both breakpoints. It is hard-coded as the server-rendered
+          default so there is no jump on hydration, then the measured value takes
+          over and keeps it correct if the logo or padding ever change. */}
+      <div aria-hidden style={{ height: headerHeight || 81.05 }} />
 
       {/* Rendered outside the header so it is positioned against the viewport
           rather than the bar. Fixed, so it overlays the page instead of pushing

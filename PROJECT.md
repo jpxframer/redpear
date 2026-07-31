@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-31 (all eight screens built; contact map is now a real embed)
+**Last updated:** 2026-07-31 (navbar fixed; page transitions + scroll reveals)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Live:** https://redpear.vercel.app — **publicly reachable**, deployed from `main` via the
 Vercel dashboard's GitHub integration, so every push to `main` redeploys. There is no
@@ -135,8 +135,9 @@ npm run build    # must pass before any commit
 
 ```
 app/
-  globals.css          design tokens + gloss utilities  ← read before styling anything
-  layout.tsx           font wiring, metadata
+  globals.css          design tokens + gloss utilities + motion  ← read before styling
+  layout.tsx           font wiring, metadata, Navbar + Footer, noscript guard
+  template.tsx         remounts per navigation — drives the page transition
   page.tsx             landing page composition (section order lives here)
   about/page.tsx       /about composition + its own metadata
   services/page.tsx    /services composition + its own metadata
@@ -155,6 +156,7 @@ components/
                          Link; `buttonClasses()` exports the look on its own for
                          the one real <button> on the site, the contact submit.
   ui/IconBadge.tsx     red gloss square + 24px icon slot (see the partial-frame gotcha)
+  ui/Reveal.tsx        client wrapper — eases a section in when first scrolled to
   layout/Navbar.tsx    responsive nav + mobile overlay, client component
   sections/            one file per landing section, in page order:
                          Hero, ProblemSection, SolutionsSection,
@@ -947,8 +949,81 @@ real routes; `Blog` and `Contact` still point at landing-page sections.
 `usePathname()`, colouring it `brand-red` and setting `aria-current="page"`. Fragment links
 never match, which is correct — they are not routes.
 
-**Every page composes its own `Navbar` and `Footer`.** They are not in `app/layout.tsx`,
-which only wires fonts and metadata. A new route must include both itself.
+**`Navbar` and `Footer` live in `app/layout.tsx`, not in the pages.** This was the other way
+round until 2026-07-31 — every page mounted its own — and that is what made navigation flash:
+the layout is kept alive across a route change, but a page is not, so the sticky bar was torn
+down and rebuilt on every click, `headerHeight` resetting to 0 and the ResizeObserver
+re-attaching each time. A new route renders **only its `<main>`**; it gets the chrome for
+free. Moving them also took the duplicated Navbar out of all four route bundles.
+
+**The navbar is `fixed`, and it carries a spacer.** Changed from `sticky` on the user's
+instruction (2026-07-31) — sticky was letting page content show through the bar while
+scrolling on some browsers. Two things this depends on, both easy to break:
+
+- **`inset-x-0` is not optional.** A fixed block with auto left/right shrinks to fit its
+  contents instead of spanning the viewport.
+- **A fixed bar occupies no space**, so [`Navbar`](components/layout/Navbar.tsx) renders an
+  `aria-hidden` spacer directly after the header. Without it every page slides up underneath
+  the nav. Its height is **81.05** — 48.05 logo + 32 padding + 1 border, identical at both
+  breakpoints — hard-coded as the SSR default so nothing jumps on hydration, then replaced by
+  the measured value so a logo or padding change cannot silently open a gap.
+
+The measurement uses `getBoundingClientRect().height`, **not `offsetHeight`**, which rounds to
+whole pixels and would put the spacer at 81 against a bar of 81.05.
+
+`scroll-mt-20` is 80px against that 81.05 bar, so anchors land 1.05px behind it. That
+predates all of this and is invisible; it is *not* evidence of a broken spacer.
+
+**Motion — two effects, no dependencies.** Both are CSS; the only JavaScript is one
+IntersectionObserver. Added 2026-07-31.
+
+| Effect | Where | What |
+|---|---|---|
+| Page transition | [`app/template.tsx`](app/template.tsx) + `--animate-page-in` | 250ms, fades in over an 8px rise. Next remounts `template.tsx` per navigation, which restarts the CSS animation — that is the entire mechanism. |
+| Scroll reveal | [`Reveal`](components/ui/Reveal.tsx) + `[data-reveal]` in globals.css | 500ms, 16px rise, once per section per page load. |
+
+**Wrap new sections in `<Reveal>` in the page file**, not inside the section component —
+the components stay presentational and the page keeps deciding what animates. **Heroes are
+deliberately left unwrapped**: they are above the fold, so they would fight the page
+transition already running on them.
+
+> **Any section with an anchor id must be `<Reveal rise={false}>`.** A transform moves an
+> element's box for *scrolling* as well as visually, so a section that lifts 16px part-way
+> through a scroll comes to rest 16px higher than the browser aimed for — behind the fixed
+> navbar. Measured at 17px of overlap on `#blog` before this was caught. `rise={false}` fades
+> without the transform and the anchor lands exactly. There is no wrapper arrangement that
+> keeps the rise and lands correctly, because only an *ancestor* transform causes it.
+>
+> Today that means `ProblemSection` (`#about`), `SolutionsSection` (`#services`),
+> `InsightsSection` (`#blog`) and `CtaSection` (`#demo`) — the last on all four pages, since
+> it is what every "Book a Demo" button targets.
+
+> **The hidden state is the default, and that is the risk.** A `[data-reveal]` element is
+> `opacity: 0` until something shows it, so anything that stops the observer running leaves a
+> section **permanently invisible** rather than merely unanimated. Three guards exist and all
+> three are load-bearing: no `IntersectionObserver` → shown immediately (in `Reveal`);
+> reduced motion → forced visible in CSS; **scripting off → a `<noscript>` style block in
+> `layout.tsx`**, which is the only guard that does not live in `Reveal.tsx` and so the easy
+> one to delete by accident. All three are verified in-browser, not assumed.
+
+**Reduced motion is respected here, unlike the marquee** — and the two are not in conflict.
+Freezing a marquee makes it look broken, which is why the user had that guard removed; a
+section that simply *is* there is the correct reduced-motion result. Never "fix" the
+consistency by dropping the reveal guards.
+
+Only `opacity` and `transform` are animated, both compositor-only, so **no amount of this can
+introduce layout shift**. Do not animate height, margin or top.
+
+**Anchor scrolling was already smooth before any of this** — `scroll-behavior: smooth` on
+`html`, with every landing section carrying `scroll-mt-20` to clear the sticky bar. A new
+section with an `id` needs that `scroll-mt-20` or it lands underneath the navbar.
+
+> **`scroll-behavior: smooth` will break a naive scroll-through test.** `window.scrollTo()`
+> animates, so a loop that scrolls and waits 100ms just re-targets the in-flight animation and
+> the middle of the page is never actually traversed — sections then look like they failed to
+> reveal when they are fine. This produced a false failure on `/about` (4 of 7 "stuck") on
+> 2026-07-31. Set `document.documentElement.style.scrollBehavior = "auto"` first and pass
+> `behavior: "instant"`.
 
 **Responsive breakpoint.** Mobile-first base styles, `lg:` (1024px) switches to desktop.
 Figma frames are 1440px desktop / 402px mobile. Desktop gutter is `lg:px-28` (112px),
@@ -1289,6 +1364,76 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-31 — Navbar is fixed, not sticky
+User reported page content showing through the bar while scrolling on some browsers, and
+asked for `fixed` with everything else unchanged.
+
+The catch is that a fixed bar leaves the flow, so the whole site would slide up 81.05px under
+the nav. A measured `aria-hidden` spacer holds that space open. Verified as *identical*
+rather than assumed: `mainTop` and `heroTop` are **81.05 on all four routes at both
+breakpoints**, exactly what they measured before the change, and hit-testing the centre of the
+bar while scrolled returns the header — nothing bleeding through.
+
+**This surfaced a real bug in the reveal work from earlier today.** `#blog` was landing 17px
+*behind* the bar, because an unrevealed section sits at `translateY(16px)` and transforms move
+an element's box for scrolling too — so the browser scrolled to the shifted position and the
+reveal then lifted it mid-flight. That affected `#demo` as well, which every "Book a Demo"
+button targets. Fixed with a `rise={false}` variant on `Reveal` for anchor-target sections;
+`#blog` now lands at 79.73, matching production to the pixel.
+
+Two measurement traps caught here, both worth remembering:
+
+- **A scroll-position assertion passes trivially when the page has not scrolled.** The first
+  anchor run reported PASS with the target 4,709px below the fold. Assert that the page
+  actually moved before asserting where it stopped.
+- **The old deploy is a free baseline.** `redpear.vercel.app` still runs the pre-animation
+  code, so comparing localhost against it settled "did I break same-page hash links?" in one
+  run — identical on both (scrollY 7615, `#blog` top 79.73). Worth reaching for whenever
+  "is this a regression?" is the question.
+
+One disclosed residual: following `/#demo` **from another route** lands up to 8px high,
+because the page transition's own 8px rise is still animating while the browser scrolls. It is
+a race, so it varies between 0.6 and 9px. Invisible against the CTA band's 24-50px of internal
+padding, and the only clean fix is dropping the rise from the page transition — which the user
+chose deliberately. Same-page anchors are unaffected.
+
+### 2026-07-31 — Page transitions and scroll reveals
+User reported navigation "glitching" and asked for a soft page transition plus scroll
+animation. Investigating first was worth it, because the brief did not match the code:
+
+- **Smooth scrolling already existed** (`scroll-behavior: smooth`, plus `scroll-mt-20` on
+  every landing section). So "smooth scroll through the sections" had to mean something else;
+  asked, and it meant **reveal-on-scroll**. Building what was literally asked for would have
+  produced nothing.
+- **The glitch was structural, not missing animation.** Every page mounted its own `Navbar`
+  and `Footer`, so a route change unmounted and rebuilt the sticky bar — `headerHeight` back
+  to 0, ResizeObserver re-attached. A fade laid over that would have hidden the symptom.
+
+So the fix is in two parts. `Navbar` and `Footer` moved into `app/layout.tsx`, which persists
+across navigation; only `<main>` is swapped now. That reversed a convention this file used to
+state, and it **shrank every route bundle** (landing and About 2.02 kB → 508 B) since the
+Navbar is no longer duplicated four times.
+
+Then the motion itself, **zero dependencies**: `app/template.tsx` remounts per navigation and
+restarts a 250ms CSS fade-and-rise, and a `Reveal` wrapper eases each below-the-fold section
+in at 500ms/16px via one IntersectionObserver, unobserving after the first appearance.
+
+**The thing to be careful with is that hidden is the default state** — `opacity: 0` until
+shown, so a broken observer means permanently invisible content, not just missing animation.
+Three guards, all verified in Chrome rather than assumed: no IntersectionObserver, reduced
+motion (forced visible in CSS — the opposite call to the marquee, deliberately), and
+scripting off (a `<noscript>` block in `layout.tsx`, the only guard living outside
+`Reveal.tsx`).
+
+Verified across all four routes at 1440 and 402: every reveal reaches `shown` with none stuck,
+the navbar stays `sticky` at top 0, and the header and footer DOM nodes **survive** three
+consecutive client-side navigations — branded before navigating and still branded after, which
+is the actual proof the remount is gone.
+
+One test artifact worth knowing, now in the notes above: the first run reported 4 of 7 About
+sections stuck, which was the test's own fault — `scroll-behavior: smooth` makes `scrollTo()`
+animate, so a fast scroll loop re-targets it and never traverses the middle of the page.
 
 ### 2026-07-31 — Dial code shows "+233" closed, "+233 Ghana" open
 User asked for the phone field's dialling-code control to show only the code when closed,

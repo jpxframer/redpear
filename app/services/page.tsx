@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { ServicesHero } from "@/components/services/ServicesHero";
 import { FaqSection } from "@/components/services/FaqSection";
 // Shared with other pages. "How We Work" is the About page's Approach section
@@ -9,6 +7,7 @@ import { FaqSection } from "@/components/services/FaqSection";
 import { ApproachSection } from "@/components/about/ApproachSection";
 import { WhySection } from "@/components/sections/WhySection";
 import { CtaSection } from "@/components/sections/CtaSection";
+import { Reveal } from "@/components/ui/Reveal";
 
 const howWeWork = [
   {
@@ -40,20 +39,28 @@ export const metadata: Metadata = {
 };
 
 export default function ServicesPage() {
+  // Navbar and Footer live in app/layout.tsx; the hero stays unwrapped because
+  // it is above the fold. Same shape as the landing page.
   return (
-    <>
-      <Navbar />
-      <main>
-        <ServicesHero />
+    <main>
+      <ServicesHero />
+      <Reveal>
         <ApproachSection title="How We Work" steps={howWeWork} />
+      </Reveal>
+      <Reveal>
         <WhySection />
+      </Reveal>
+      <Reveal>
         <FaqSection />
+      </Reveal>
+      {/* rise={false}: CtaSection carries id="demo", the target of every
+          "Book a Demo" button. See Reveal. */}
+      <Reveal rise={false}>
         <CtaSection
           title="Ready to Transform Your Insurance Operations?"
           body="Whether you're modernizing existing systems or building new digital experiences, RedPear is ready to help you take the next step."
         />
-      </main>
-      <Footer />
-    </>
+      </Reveal>
+    </main>
   );
 }

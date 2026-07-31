@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Inter } from "next/font/google";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 const geist = Geist({
@@ -25,7 +27,24 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable} ${inter.variable}`}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        {/* Scroll reveal hides a section until JavaScript shows it, so with
+            scripting off every one of them would stay invisible. This is the
+            only guard for that case — see components/ui/Reveal.tsx. */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1;transform:none;}`}</style>
+        </noscript>
+
+        {/* Navbar and Footer live here rather than in each page so they survive
+            navigation instead of unmounting and rebuilding. The bar is sticky
+            and measures its own height on mount, so remounting it per route was
+            visibly tearing it down and putting it back — the flash this whole
+            change set out to fix. Only `children` is swapped, and only that is
+            animated (app/template.tsx). */}
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

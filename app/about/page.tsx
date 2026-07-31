@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { AboutHero } from "@/components/about/AboutHero";
 import { StorySection } from "@/components/about/StorySection";
 import { BeliefsSection } from "@/components/about/BeliefsSection";
@@ -12,6 +10,7 @@ import { WhySection } from "@/components/sections/WhySection";
 import { PartnersSection } from "@/components/about/PartnersSection";
 // Also shared: the About CTA band is the landing card with different wording.
 import { CtaSection } from "@/components/sections/CtaSection";
+import { Reveal } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
   title: "About — RedPear",
@@ -20,23 +19,37 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  // Navbar and Footer live in app/layout.tsx; the hero stays unwrapped because
+  // it is above the fold. Same shape as the landing page.
   return (
-    <>
-      <Navbar />
-      <main>
-        <AboutHero />
+    <main>
+      <AboutHero />
+      <Reveal>
         <StorySection />
+      </Reveal>
+      <Reveal>
         <BeliefsSection />
+      </Reveal>
+      <Reveal>
         <TeamSection />
+      </Reveal>
+      <Reveal>
         <ApproachSection />
+      </Reveal>
+      <Reveal>
         <WhySection />
+      </Reveal>
+      <Reveal>
         <PartnersSection />
+      </Reveal>
+      {/* rise={false}: CtaSection carries id="demo", the target of every
+          "Book a Demo" button. See Reveal. */}
+      <Reveal rise={false}>
         <CtaSection
           title="Ready to Transform Your Insurance Operations?"
           body="Whether you're modernizing existing systems or building new digital experiences, RedPear is ready to help you take the next step."
         />
-      </main>
-      <Footer />
-    </>
+      </Reveal>
+    </main>
   );
 }
