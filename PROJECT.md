@@ -7,7 +7,7 @@
 > Claude Code only auto-loads `CLAUDE.md`, so a one-line `CLAUDE.md` sits alongside this
 > file pointing here. Keep that pointer — without it a new session starts blind.
 
-**Last updated:** 2026-07-30 (deployed to Vercel and verified live)
+**Last updated:** 2026-07-31 (About page started — hero built, `/about` route live)
 **Repo:** https://github.com/jpxframer/redpear (private, default branch `main`)
 **Live:** https://redpear.vercel.app — **publicly reachable**, deployed from `main` via the
 Vercel dashboard's GitHub integration, so every push to `main` redeploys. There is no
@@ -36,7 +36,23 @@ Landing page, section by section. Six of ten blocks are built and pushed.
 
 **The landing page is structurally complete.** Every block is built and responsive.
 
-**Next up:** screens 2–8 of the eight core screens, none of which have been started.
+### About page (`/about`) — in progress
+
+Screen 3/4 of the eight core screens. Nine blocks; one is built.
+
+| Block | Status |
+|---|---|
+| Hero — "Building the Future of Insurance Through Technology" | ✅ |
+| 1 — Our Story / Mission / Vision | ⬜ |
+| 2 — What We Believe | ⬜ |
+| 3 — Our Team & Leadership | ⬜ |
+| 4 — Our Approach | ⬜ |
+| 5 — Why Organizations Choose RedPear | ⬜ |
+| 6 — Partners & Clients | ⬜ |
+| 7 — CTA band | ⬜ |
+| 8 — Footer | ✅ (reuses the shared `Footer`) |
+
+**Next up:** the rest of the About page, then screens 5–8.
 
 **Blocking launch, not just polish:** the footer newsletter form has no destination, the
 CTA buttons have no booking flow, and most nav/footer links are placeholder anchors. All
@@ -87,7 +103,9 @@ app/
   globals.css          design tokens + gloss utilities  ← read before styling anything
   layout.tsx           font wiring, metadata
   page.tsx             landing page composition (section order lives here)
+  about/page.tsx       /about composition + its own metadata
 components/
+  about/               About page sections, in page order: AboutHero
   ui/Button.tsx        shared CTA (primary = red, secondary = white)
   ui/IconBadge.tsx     red gloss square + 24px icon slot (see the partial-frame gotcha)
   layout/Navbar.tsx    responsive nav + mobile overlay, client component
@@ -193,8 +211,8 @@ accept, a pasted `figd_` token — it is a credential leak with no upside.
 |---|---|---|---|
 | 1 | `20875-19501` | Landing — Desktop | 🟡 in progress |
 | 2 | `20875-20474` | Landing — Mobile | 🟡 in progress |
-| 3 | `20875-18777` | not yet inspected | ⬜ not started |
-| 4 | `20875-19146` | not yet inspected | ⬜ not started |
+| 3 | `20875-18777` | About — Desktop (1440x7356) | 🟡 in progress |
+| 4 | `20875-19146` | About — Mobile (402x12801) | 🟡 in progress |
 | 5 | `20875-21362` | not yet inspected | ⬜ not started |
 | 6 | `20875-21622` | not yet inspected | ⬜ not started |
 | 7 | `20875-21873` | not yet inspected | ⬜ not started |
@@ -358,9 +376,69 @@ on mobile for the longer job titles (its own Profile Wrapper measures 320px insi
 content box). Allowed to wrap instead, which makes mobile cards ~11px taller than Figma
 but keeps the text inside the card.
 
+### About page sections
+
+Desktop `20875-18777` (1440x7356) and mobile `20875-19146` (402x12801), both enumerated in
+full on 2026-07-31 — this map should not need re-deriving. Blocks are named "Section",
+"Hero" or "Section Mobile" indiscriminately in Figma, so heading copy is the only reliable
+way to tell them apart.
+
+| # | Block | Desktop node | Mobile node | Desktop height |
+|---|---|---|---|---|
+| — | Hero — "Building the Future of Insurance Through Technology" | `20875-18778` | `20875-19147` | 988 |
+| 1 | Our Story + Mission/Vision | `20875-18806` | `20875-19164` | 846 |
+| 2 | What We Believe (4 value cards) | `20875-18825` | `20875-19182` | 594 |
+| 3 | Our Team & Leadership (6 profiles) | `20875-18858` | `20875-19215` | 1682 |
+| 4 | Our Approach (4 numbered steps) | `20875-18944` | `20875-19300` | 618 |
+| 5 | Why Organizations Choose RedPear | `20875-18973` | `20875-19329` | 1448 |
+| 6 | Partners & Clients (10 logos) | `20875-19004` | `20875-19359` | 314 |
+| 7 | CTA — "Ready to Transform Your Insurance Operations?" | `20875-19019` | `20875-19374` | 488 |
+| 8 | Footer | `20875-19043` | `20875-19398` | 378 |
+
+The **footer is identical to the landing page's**, so it reuses the shared `Footer`
+component. **Section 5 is the landing page's section 5 with different body copy** — same
+four cards, same 2x2 layout, but 544-wide images against the landing's 592 and reworded
+descriptions. Plan to generalise `WhyCard` rather than fork it.
+
+The navbar in the About frames (`20875-18779` desktop, `20875-19156` mobile) is the shared
+one. The mobile Nav frame is 133 tall because it includes a 53px iOS **StatusBar mock**
+(`20875-19158`) — the real bar is 80.05 like everywhere else. Do not reproduce the status
+bar.
+
+**Hero node IDs.** Content frame is `20875-18793` desktop / `20875-19148` mobile (the
+navbar is a sibling, not a child). Desktop is a centred 800px copy column over a
+three-column collage of five images; mobile keeps **only the first and last** of those
+five, stacked full width.
+
+| Image | Slot (desktop) | On mobile | File |
+|---|---|---|---|
+| Enterprise Technology | col 1 top, 236 tall | ✅ shown | about/enterprise-technology.png |
+| Built for Africa | col 1 bottom, 236 tall | hidden | about/built-for-africa.png |
+| Technology Improving Insurance | col 2, full 488 tall | hidden | about/technology-improving-insurance.png |
+| Insurance Trust | col 3 top, 236 tall | hidden | about/insurance-trust.png |
+| RedPear Team Collaboration | col 3 bottom, 236 tall | ✅ shown | about/team-collaboration.png |
+
+All five export at 1024x1024 into non-square slots, so they are `object-cover`.
+
+> **Figma layout bug — normalised, not reproduced.** The collage's left column is 394 wide
+> against 384 for the other two. With 32px gaps that totals 1226 inside a 1216 container,
+> i.e. it overflows its own frame by 10px. Built as three equal 384px columns, which is
+> what the other two already are. Columns 2 and 3 therefore sit 10px left of Figma.
+
 ---
 
 ## Conventions and gotchas
+
+**Nav links are root-relative (`/#blog`), never bare fragments (`#blog`).** Since `/about`
+exists there is more than one route, and a bare fragment resolves against whatever page you
+are already on — so `#blog` from `/about` looks for a section that is not there. Only
+`About` is a real route so far; the rest still point at landing-page sections.
+[`Navbar`](components/layout/Navbar.tsx) marks the active one by comparing `href` to
+`usePathname()`, colouring it `brand-red` and setting `aria-current="page"`. Fragment links
+never match, which is correct — they are not routes.
+
+**Every page composes its own `Navbar` and `Footer`.** They are not in `app/layout.tsx`,
+which only wires fonts and metadata. A new route must include both itself.
 
 **Responsive breakpoint.** Mobile-first base styles, `lg:` (1024px) switches to desktop.
 Figma frames are 1440px desktop / 402px mobile. Desktop gutter is `lg:px-28` (112px),
@@ -435,6 +513,15 @@ The same risk applies to any generic tag selector while the dev server is runnin
 images that scroll just triggered, so they capture blank and `naturalWidth` reads 0. Walk
 the page (driving `window.scrollTo` from Node, not in an in-page async loop, which can
 blow the protocol timeout), `await img.decode()`, then capture.
+
+**Bound every in-page `img.decode()` with a `Promise.race` timeout.** An image the dev
+server has not finished building never settles, so an unbounded `Promise.all` over
+`document.images` hangs until Puppeteer kills the connection with
+`ProtocolError: Runtime.callFunctionOn timed out` — which reads like a browser crash and is
+not one. Also pass `protocolTimeout` to `launch()`; the 30s default is tight for a cold dev
+server. Separately, `display: none` images legitimately report `naturalWidth === 0` because
+the browser never fetches them, so filter to *visible* images before calling any of them
+broken.
 
 **Read `img.currentSrc`, never `getAttribute("src")`, to check what `next/image` served.**
 The `src` attribute is the largest fallback candidate, so it always looks like the biggest
@@ -537,6 +624,10 @@ at 1440px and 402px and diff against the Figma frames.
 
 **Engineering debt**
 
+- [ ] **About hero images are oversized.** `public/about/` is five 1024x1024 PNGs at
+      ~1.2-1.7 MB each (7 MB total) rendering into 384x236 and 384x488 slots. Next.js
+      optimises delivery, so this is repo weight rather than user-facing, but it is now the
+      heaviest directory in the repo. Re-export at ~800px wide.
 - [ ] Avatar PNGs are oversized for their display size: `public/avatars/` is ~1.4 MB each
       at 28px, `public/testimonials/` ~1.2 MB each (1024x1024) at 40px. Re-export at
       ~64-96px. Next.js optimises delivery, so this is repo weight, not user-facing.
@@ -550,8 +641,11 @@ at 1440px and 402px and diff against the Figma frames.
       a translate/opacity toggle.
 - [ ] The overlay does not trap focus. Escape closes it and the toggle is reachable, but
       tabbing can still reach content behind it.
-- [ ] Nav and CTA links are placeholder anchors (`#about`, `#demo`, `#services`, `#blog`,
-      `#contact`, `#claims`). They resolve as sections get built.
+- [ ] Nav and CTA links are still placeholder anchors apart from About, which is now the
+      real `/about` route. `/#services`, `/#blog`, `/#contact` and `/#demo` resolve to
+      landing-page sections; `#claims` resolves to nothing. They firm up as pages get
+      built. The landing page's `ProblemSection` keeps `id="about"`, now unreferenced by
+      the nav — harmless, but drop it if nothing else claims it.
 - [x] ~~The hero's insurer logo row stretches on wide screens.~~ Fixed 2026-07-30 when the
       row became a marquee — the viewport is now `max-w-content` and holds 1216 at any
       width. The hero's three-card row still measures wide but is visually fine, since the
@@ -571,6 +665,36 @@ at 1440px and 402px and diff against the Figma frames.
 
 Newest first. One entry per step — what changed and anything that would surprise the next
 session.
+
+### 2026-07-31 — About page started: `/about` route + hero
+First page beyond the landing page. Added [`app/about/page.tsx`](app/about/page.tsx) and
+[`AboutHero`](components/about/AboutHero.tsx), and mapped **both** About frames end to end
+(see [About page sections](#about-page-sections)) so the remaining eight blocks do not need
+re-deriving.
+
+**Pixel-exact at both breakpoints** — desktop 908 and mobile 880 against Figma's 908/880,
+heading 800x112 desktop and 370x132 mobile, sub 120 tall on mobile, tiles 384x236 /
+384x488 / 370x236, all at a 16px radius.
+
+Two things a fresh session should know. Figma's collage **left column is 394 wide against
+384 for the other two**, which overflows its own 1216 frame by 10px — built as three equal
+384px columns instead, so columns 2 and 3 sit 10px left of Figma. And the **mobile frame
+keeps only 2 of the 5 images**; the other three are `hidden lg:block`, so they correctly
+report `naturalWidth === 0` on mobile because the browser never fetches them.
+
+The collage is a flat list of five images placed explicitly into a grid
+(`lg:col-start-*` / `lg:row-start-*`) rather than nested column divs, so the mobile stack
+is just `flex-col` over the same markup with no reordering.
+
+**Nav now routes rather than scrolls.** `About` points at `/about` and is coloured
+`brand-red` with `aria-current="page"` when active, in both the desktop bar and the mobile
+overlay, driven by `usePathname()`. The other three links became **root-relative**
+(`/#services`, `/#blog`, `/#contact`, and `/#demo` on both CTAs) — as bare fragments they
+would have looked for landing-page sections on `/about` and done nothing. Verified active
+on `/about` and inactive on `/` at both breakpoints.
+
+Figma's mobile Nav frame is 133 tall only because it mocks a 53px iOS status bar; the real
+bar is 80.05 as everywhere else. Not reproduced.
 
 ### 2026-07-30 — Deployed to Vercel and verified live
 User deployed via the Vercel dashboard (no CLI auth exists on this machine, so deploys

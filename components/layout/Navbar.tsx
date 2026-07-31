@@ -2,20 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
+// About is its own route; the rest are still landing-page sections. Their hrefs
+// are root-relative rather than bare fragments so they resolve from /about too —
+// a bare "#blog" would look for that section on whatever page you are already on.
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/#services" },
+  { label: "Blog", href: "/#blog" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
+  const pathname = usePathname();
 
   // The overlay is fixed to the viewport, so it needs the bar's real height to
   // start directly beneath it. Measured rather than hard-coded so changing the
@@ -83,22 +88,30 @@ export function Navbar() {
           </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-4 lg:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="px-4 py-1 text-body-lg text-neutral-500 transition-colors hover:text-brand-black"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = link.href === pathname;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`px-4 py-1 text-body-lg transition-colors ${
+                    active
+                      ? "text-brand-red"
+                      : "text-neutral-500 hover:text-brand-black"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Wrapped rather than given `hidden` directly: Button sets its own
               display utility, and Tailwind resolves conflicting display classes by
               property order, not by class-attribute order. */}
           <div className="hidden lg:block">
-            <Button href="#demo">Book a Demo</Button>
+            <Button href="/#demo">Book a Demo</Button>
           </div>
 
           <button
@@ -132,21 +145,27 @@ export function Navbar() {
           className="fixed inset-x-0 bottom-0 z-40 flex flex-col overflow-y-auto bg-brand-white px-4 pt-2 pb-8 lg:hidden"
         >
           <ul className="flex flex-col">
-            {navLinks.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-4 text-body-lg text-neutral-500"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              const active = link.href === pathname;
+              return (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={`block py-4 text-body-lg ${
+                      active ? "text-brand-red" : "text-neutral-500"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           <div className="mt-6">
-            <Button href="#demo" className="w-full" onClick={() => setMenuOpen(false)}>
+            <Button href="/#demo" className="w-full" onClick={() => setMenuOpen(false)}>
               Book a Demo
             </Button>
           </div>
